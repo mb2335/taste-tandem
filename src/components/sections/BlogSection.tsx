@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, ArrowRight } from "lucide-react";
+import { BookOpen, ArrowRight, AlertCircle, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -31,7 +31,9 @@ export const BlogSection = () => {
     return (
       <div className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 text-center">
+          <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-4" />
           <p className="text-red-500">Failed to load blog posts. Please try again later.</p>
+          <pre className="mt-2 text-sm text-red-400">{error.message}</pre>
         </div>
       </div>
     );
@@ -40,16 +42,15 @@ export const BlogSection = () => {
   if (isLoading) {
     return (
       <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse space-y-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-lg" />
-            ))}
-          </div>
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <LoaderCircle className="h-10 w-10 text-primary mx-auto mb-4 animate-spin" />
+          <p className="text-gray-500">Loading blog posts...</p>
         </div>
       </section>
     );
   }
+
+  console.log('Rendering BlogSection with blogs:', blogs);
 
   return (
     <section className="py-16 bg-gray-50">
@@ -71,6 +72,10 @@ export const BlogSection = () => {
                     src={blog.image_url}
                     alt={blog.title}
                     className="w-full h-48 object-cover"
+                    onError={(e) => {
+                      console.error('Image failed to load:', blog.image_url);
+                      e.currentTarget.src = '/placeholder.svg';
+                    }}
                   />
                 </CardHeader>
                 <CardContent className="p-6">
@@ -88,6 +93,7 @@ export const BlogSection = () => {
           </div>
         ) : (
           <div className="text-center mb-12">
+            <AlertCircle className="h-10 w-10 text-yellow-500 mx-auto mb-4" />
             <p className="text-gray-500">No blog posts available at the moment.</p>
           </div>
         )}
