@@ -19,25 +19,29 @@ export const serviceCategories: ServiceCategory[] = [
     ]
   },
   {
-    name: "Social Media Management",
+    name: "Social Media & Marketing",
     subcategories: [
-      "Instagram Management",
-      "TikTok Management",
-      "Facebook Management",
-      "Content Calendar",
-      "Community Engagement",
-      "Influencer Outreach"
-    ]
-  },
-  {
-    name: "Marketing Strategy",
-    subcategories: [
-      "Social Media Strategy",
+      "Platform Management",
       "Content Strategy",
+      "Paid Advertising",
       "Influencer Marketing",
       "Email Marketing",
       "Local SEO",
-      "Brand Storytelling"
+      "Brand Storytelling",
+      "Campaign Management"
+    ]
+  },
+  {
+    name: "Graphic Design",
+    subcategories: [
+      "Menu Design",
+      "Logo Design",
+      "Poster Design",
+      "Brand Identity",
+      "Packaging Design",
+      "Print Materials",
+      "Digital Assets",
+      "Promotional Graphics"
     ]
   },
   {
@@ -59,6 +63,17 @@ export const serviceCategories: ServiceCategory[] = [
       "TripAdvisor",
       "Response Strategy",
       "Review Generation"
+    ]
+  },
+  {
+    name: "Loyalty Programs",
+    subcategories: [
+      "Rewards Program Design",
+      "Customer Retention",
+      "Points System",
+      "Member Benefits",
+      "Program Analytics",
+      "Digital Loyalty Cards"
     ]
   }
 ];

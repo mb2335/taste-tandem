@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, Video, Instagram, Calendar, Star, MessageSquare, Megaphone } from "lucide-react";
+import { Share2, Palette, Badge, Camera, Video, Calendar, Star } from "lucide-react";
 
 const categories = [
   {
@@ -8,14 +8,14 @@ const categories = [
     description: "Professional food photography and video content",
   },
   {
-    icon: Instagram,
-    title: "Social Media",
-    description: "Platform management and content strategy",
+    icon: Share2,
+    title: "Social Media & Marketing",
+    description: "Platform management and growth strategies",
   },
   {
-    icon: Megaphone,
-    title: "Marketing",
-    description: "Strategic marketing and brand growth",
+    icon: Palette,
+    title: "Graphic Design",
+    description: "Menus, logos, posters, and brand materials",
   },
   {
     icon: Calendar,
@@ -28,9 +28,9 @@ const categories = [
     description: "Online reputation management",
   },
   {
-    icon: MessageSquare,
-    title: "Community",
-    description: "Engage with your audience",
+    icon: Badge,
+    title: "Loyalty Programs",
+    description: "Customer retention and rewards",
   },
 ];
 
