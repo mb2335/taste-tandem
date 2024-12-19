@@ -48,9 +48,9 @@ export const SearchBar = () => {
   };
 
   const clearAll = () => {
-    setSearch("");
-    setLocation("");
     setSelectedFilters([]);
+    setLocation("");
+    setSearch("");  // Move this to the end
   };
 
   const handleSearch = () => {
@@ -58,7 +58,6 @@ export const SearchBar = () => {
       filters: selectedFilters,
       location: location,
     });
-    // Here you would implement the actual search functionality
   };
 
   return (
@@ -70,7 +69,7 @@ export const SearchBar = () => {
               <CommandInput
                 placeholder="Search food influencers..."
                 value={search}
-                onValueChange={setSearch}
+                onValueChange={(value) => setSearch(value)}  // Changed to use callback
                 className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
               />
               {(search || selectedFilters.length > 0) && (
@@ -78,7 +77,10 @@ export const SearchBar = () => {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8"
-                  onClick={clearAll}
+                  onClick={(e) => {
+                    e.preventDefault();  // Added to prevent event bubbling
+                    clearAll();
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
