@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { RoleSelection } from "@/components/RoleSelection";
 import { LogOut } from "lucide-react";
 import { CategoryFilter } from "@/components/CategoryFilter";
+import { Header } from "@/components/Header";
 
 const gigs = [
   {
@@ -107,7 +108,8 @@ const Index = () => {
     : gigs;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16">
+      <Header />
       {isAuthenticated && (
         <div className="absolute top-4 right-4">
           <Button variant="ghost" onClick={handleSignOut}>
