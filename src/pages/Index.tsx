@@ -1,13 +1,12 @@
 import { SearchSection } from "@/components/SearchSection";
-import { GigCard } from "@/components/GigCard";
 import { CategorySection } from "@/components/CategorySection";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RoleSelection } from "@/components/RoleSelection";
-import { LogOut } from "lucide-react";
 import { DashboardLayout, Goal } from "@/components/DashboardLayout";
+import { WelcomeSection } from "@/components/WelcomeSection";
+import { FilteredGigs } from "@/components/FilteredGigs";
+import { AuthControls } from "@/components/AuthControls";
 
 const gigs = [
   {
@@ -46,7 +45,6 @@ const gigs = [
 ];
 
 const Index = () => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -89,12 +87,6 @@ const Index = () => {
     }
   }, [selectedGoal]);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setIsAuthenticated(false);
-    setUserRole(null);
-  };
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -105,46 +97,10 @@ const Index = () => {
 
   return (
     <DashboardLayout onGoalSelect={setSelectedGoal} selectedGoal={selectedGoal}>
-      {isAuthenticated && (
-        <div className="absolute top-4 right-4">
-          <Button variant="ghost" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
-      )}
-      
-      <div className="max-w-4xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Taste Tandem</h1>
-        <p className="text-lg text-muted-foreground">
-          {selectedGoal 
-            ? `Discover ${selectedGoal.title.toLowerCase()} solutions tailored for your restaurant.`
-            : "Select your business goal from the sidebar to discover curated influencer services that will help you achieve your objectives."}
-        </p>
-      </div>
-
+      <AuthControls isAuthenticated={isAuthenticated} />
+      <WelcomeSection selectedGoal={selectedGoal} />
       <SearchSection />
-      
-      <div className="max-w-7xl mx-auto py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          {selectedGoal 
-            ? `${selectedGoal.title} Solutions`
-            : userRole === "restaurant" 
-              ? "Top-Rated Food Influencers" 
-              : "Restaurant Opportunities"}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredGigs.map((gig) => (
-            <GigCard key={gig.title} {...gig} />
-          ))}
-        </div>
-        {filteredGigs.length === 0 && (
-          <p className="text-center text-muted-foreground mt-8">
-            No services found for this goal. Please try another goal or contact us for custom solutions.
-          </p>
-        )}
-      </div>
-
+      <FilteredGigs filteredGigs={filteredGigs} />
       <CategorySection />
     </DashboardLayout>
   );
