@@ -167,8 +167,10 @@ const Index = () => {
       <Hero />
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold whitespace-nowrap">Browse Opportunities</h2>
-          <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
+          <h2 className="text-3xl font-bold text-neutral-900">Browse Opportunities</h2>
+          <div className="flex-shrink-0">
+            <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
+          </div>
         </div>
         
         <div className="flex flex-col md:flex-row gap-8">
