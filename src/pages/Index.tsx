@@ -1,31 +1,41 @@
 import { Hero } from "@/components/Hero";
-import { InfluencerCard } from "@/components/InfluencerCard";
+import { SearchSection } from "@/components/SearchSection";
+import { GigCard } from "@/components/GigCard";
 import { CategorySection } from "@/components/CategorySection";
 
-const featuredInfluencers = [
+const gigs = [
   {
-    name: "Sarah Chen",
-    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
-    followers: "120K followers",
+    title: "Professional Food Photography Package",
+    description: "High-quality photos of your restaurant's signature dishes",
+    price: "$299",
+    deliveryTime: "3-5 days delivery",
     rating: 4.9,
-    specialties: ["Food Photography", "Restaurant Reviews"],
-    price: "From $299",
+    engagement: "5.2%",
+    followers: "120K",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
+    tags: ["Photography", "Social Media", "Branding"],
   },
   {
-    name: "Mike Johnson",
-    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
-    followers: "85K followers",
+    title: "TikTok Restaurant Promotion",
+    description: "Viral-worthy TikTok content for your restaurant",
+    price: "$399",
+    deliveryTime: "7 days delivery",
     rating: 4.8,
-    specialties: ["Video Content", "Social Media"],
-    price: "From $249",
+    engagement: "6.1%",
+    followers: "85K",
+    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
+    tags: ["TikTok", "Video", "Social Media"],
   },
   {
-    name: "Lisa Wong",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
-    followers: "200K followers",
+    title: "Instagram Story & Post Bundle",
+    description: "Comprehensive Instagram coverage of your venue",
+    price: "$499",
+    deliveryTime: "5-7 days delivery",
     rating: 5.0,
-    specialties: ["Food Styling", "Brand Collaboration"],
-    price: "From $399",
+    engagement: "4.8%",
+    followers: "200K",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
+    tags: ["Instagram", "Content Creation", "Stories"],
   },
 ];
 
@@ -33,15 +43,18 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Hero />
+      <SearchSection />
       
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center mb-12">Featured Influencers</h2>
+      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Top-Rated Food Influencer Services
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredInfluencers.map((influencer) => (
-            <InfluencerCard key={influencer.name} {...influencer} />
+          {gigs.map((gig) => (
+            <GigCard key={gig.title} {...gig} />
           ))}
         </div>
-      </section>
+      </div>
 
       <CategorySection />
     </div>
