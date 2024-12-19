@@ -1,133 +1,156 @@
 import { useState, useCallback } from "react";
-import { 
+import {
   Command,
   CommandInput,
+  CommandList,
   CommandEmpty,
+  CommandGroup,
+  CommandItem,
 } from "@/components/ui/command";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LocationSearch } from "./search/LocationSearch";
-import { SelectedFilters } from "./search/SelectedFilters";
-import { SuggestionList } from "./search/SuggestionList";
-import { Suggestion } from "@/types/search";
-import { Camera, Instagram, Video } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-const suggestions: Suggestion[] = [
-  { label: "Vegan", icon: "🥗", category: "Cuisine" },
-  { label: "Food Photography", icon: <Camera className="h-4 w-4" />, category: "Content Type" },
-  { label: "Instagram", icon: <Instagram className="h-4 w-4" />, category: "Platform" },
-  { label: "TikTok", icon: <Video className="h-4 w-4" />, category: "Platform" },
-  { label: "Food Blogger", icon: "📝", category: "Role" },
-  { label: "Video Content", icon: <Video className="h-4 w-4" />, category: "Content Type" },
+interface Tag {
+  id: string;
+  label: string;
+  category: string;
+}
+
+const predefinedTags: Tag[] = [
+  { id: "1", label: "Food Photography", category: "Content Type" },
+  { id: "2", label: "Recipe Development", category: "Expertise" },
+  { id: "3", label: "Restaurant Reviews", category: "Content Type" },
+  { id: "4", label: "Vegan", category: "Cuisine" },
+  { id: "5", label: "Fine Dining", category: "Specialty" },
+  { id: "6", label: "Asian Cuisine", category: "Cuisine" },
+  { id: "7", label: "Instagram", category: "Platform" },
+  { id: "8", label: "TikTok", category: "Platform" },
+  { id: "9", label: "YouTube", category: "Platform" },
 ];
 
 export const SearchBar = () => {
-  const [search, setSearch] = useState("");
-  const [location, setLocation] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleSelect = useCallback((value: string) => {
-    if (!selectedFilters.includes(value)) {
-      setSelectedFilters(prev => [...prev, value]);
-    }
-    setSearch("");
-    setShowSuggestions(false);
-  }, [selectedFilters]);
-
-  const handleLocationSelect = useCallback((city: string) => {
-    setLocation(city);
-    setShowLocationSuggestions(false);
-  }, []);
-
-  const removeFilter = useCallback((filter: string) => {
-    setSelectedFilters(prev => prev.filter(f => f !== filter));
-  }, []);
-
-  const clearAll = useCallback(() => {
-    setSearch("");
-    setSelectedFilters([]);
-    setShowSuggestions(false);
-  }, []);
-
-  const handleSearch = useCallback(() => {
-    console.log("Searching with filters:", {
-      filters: selectedFilters,
-      location: location,
-    });
-  }, [selectedFilters, location]);
-
-  const filteredSuggestions = search 
-    ? suggestions.filter(suggestion =>
-        suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
-        !selectedFilters.includes(suggestion.label)
+  const filteredTags = searchTerm
+    ? predefinedTags.filter(
+        (tag) =>
+          tag.label.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !selectedTags.some((selected) => selected.id === tag.id)
       )
     : [];
 
+  const handleSelect = useCallback((tagId: string) => {
+    const tag = predefinedTags.find((t) => t.id === tagId);
+    if (tag && !selectedTags.some((selected) => selected.id === tag.id)) {
+      setSelectedTags((prev) => [...prev, tag]);
+    }
+    setSearchTerm("");
+    setIsOpen(false);
+  }, [selectedTags]);
+
+  const removeTag = useCallback((tagId: string) => {
+    setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setSearchTerm("");
+    setSelectedTags([]);
+    setIsOpen(false);
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    console.log("Searching with:", {
+      searchTerm,
+      selectedTags: selectedTags.map((tag) => tag.label),
+    });
+  }, [searchTerm, selectedTags]);
+
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Command className="rounded-lg border shadow-md">
+      <div className="relative">
+        <Command className="rounded-lg border shadow-md">
+          <div className="flex items-center border-b px-3">
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             <CommandInput
               placeholder="Search food influencers..."
-              value={search}
+              value={searchTerm}
               onValueChange={(value) => {
-                setSearch(value);
-                setShowSuggestions(true);
+                setSearchTerm(value);
+                setIsOpen(true);
               }}
-              className="h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0"
+              className="flex-1 h-11 bg-transparent outline-none placeholder:text-muted-foreground"
             />
-            {(search || selectedFilters.length > 0) && (
+            {(searchTerm || selectedTags.length > 0) && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-2 h-8 w-8"
+                className="h-8 w-8"
                 onClick={clearAll}
               >
                 <X className="h-4 w-4" />
               </Button>
             )}
-            {showSuggestions && search && (
-              <>
-                {filteredSuggestions.length > 0 ? (
-                  <SuggestionList 
-                    suggestions={filteredSuggestions}
-                    onSelect={handleSelect}
-                  />
-                ) : (
-                  <CommandEmpty>No results found.</CommandEmpty>
-                )}
-              </>
-            )}
-          </Command>
-        </div>
-
-        <LocationSearch
-          location={location}
-          setLocation={setLocation}
-          showLocationSuggestions={showLocationSuggestions}
-          setShowLocationSuggestions={setShowLocationSuggestions}
-          handleLocationSelect={handleLocationSelect}
-          handleSearch={handleSearch}
-          popularCities={[
-            "New York, NY",
-            "Los Angeles, CA",
-            "Chicago, IL",
-            "Houston, TX",
-            "Miami, FL",
-            "San Francisco, CA",
-            "Seattle, WA",
-            "Austin, TX",
-          ]}
-        />
+          </div>
+          {isOpen && searchTerm && (
+            <CommandList>
+              {filteredTags.length > 0 ? (
+                <CommandGroup heading="Suggestions">
+                  {filteredTags.map((tag) => (
+                    <CommandItem
+                      key={tag.id}
+                      value={tag.id}
+                      onSelect={handleSelect}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <span className="text-sm text-muted-foreground">
+                        {tag.category}:
+                      </span>
+                      {tag.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              ) : (
+                <CommandEmpty>No results found.</CommandEmpty>
+              )}
+            </CommandList>
+          )}
+        </Command>
       </div>
 
-      <SelectedFilters
-        selectedFilters={selectedFilters}
-        removeFilter={removeFilter}
-      />
+      {selectedTags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {selectedTags.map((tag) => (
+            <Badge
+              key={tag.id}
+              variant="secondary"
+              className="flex items-center gap-1"
+            >
+              <span className="text-xs text-muted-foreground">
+                {tag.category}:
+              </span>
+              {tag.label}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => removeTag(tag.id)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      <Button 
+        className="w-full" 
+        onClick={handleSearch}
+      >
+        Search
+      </Button>
     </div>
   );
 };
