@@ -67,12 +67,11 @@ export const SearchBar = () => {
         <div className="relative flex-1">
           <Command className="rounded-lg border shadow-md">
             <div className="flex items-center border-b px-3">
-              <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
               <CommandInput
                 placeholder="Search food influencers..."
                 value={search}
                 onValueChange={setSearch}
-                className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
               />
               {(search || selectedFilters.length > 0) && (
                 <Button
@@ -130,19 +129,19 @@ export const SearchBar = () => {
         </div>
 
         <div className="relative">
-          <div className="flex items-center h-[45px]"> {/* Adjusted height to match main search */}
-            <div className="relative flex-1">
+          <div className="flex items-center h-[45px]">
+            <div className="relative">
               <Input
                 placeholder="Location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 onFocus={() => setShowLocationSuggestions(true)}
-                className="w-[200px] h-full pl-8"
+                className="w-[200px] h-[45px] pl-8"
               />
               <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
             <Button 
-              className="ml-2 bg-primary hover:bg-primary/90 h-full" 
+              className="ml-2 bg-primary hover:bg-primary/90 h-[45px]" 
               onClick={handleSearch}
             >
               Search

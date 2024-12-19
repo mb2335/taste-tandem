@@ -39,11 +39,11 @@ export const SearchSection = () => {
             <div className="relative">
               <Input
                 placeholder="Search food influencers..."
-                className="pl-10 h-[45px]"
+                className="h-[45px] pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -55,7 +55,7 @@ export const SearchSection = () => {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     onFocus={() => setShowLocationSuggestions(true)}
-                    className="w-[160px] pl-8 h-[45px]"
+                    className="w-[160px] h-[45px] pl-8"
                   />
                   <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 </div>
