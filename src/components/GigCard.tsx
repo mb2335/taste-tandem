@@ -53,7 +53,6 @@ export const GigCard = ({
       return;
     }
     
-    // Proceed with booking logic here
     console.log("Proceeding with booking for:", name);
   };
 
@@ -107,7 +106,10 @@ export const GigCard = ({
 
         <div className="flex flex-wrap gap-2 mb-3">
           {tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
+            <Badge 
+              key={tag} 
+              className="bg-[#2C6F41] hover:bg-[#2C6F41]/90 text-white"
+            >
               {tag}
             </Badge>
           ))}
@@ -116,7 +118,11 @@ export const GigCard = ({
         {platforms.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {platforms.map((platform) => (
-              <Badge key={platform} variant="outline">
+              <Badge 
+                key={platform} 
+                variant="outline" 
+                className="border-[#2C6F41] text-[#2C6F41]"
+              >
                 {platform}
               </Badge>
             ))}
