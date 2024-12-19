@@ -19,6 +19,11 @@ export const Header = () => {
             <Button variant="ghost" className="text-sm">
               Explore
             </Button>
+            <Link to="/services">
+              <Button variant="ghost" className="text-sm">
+                Additional Services
+              </Button>
+            </Link>
             <Button variant="ghost" className="text-sm">
               I'm an Influencer
             </Button>

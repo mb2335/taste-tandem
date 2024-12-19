@@ -37,11 +37,11 @@ const categories = [
 export const CategorySection = () => {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <h2 className="text-3xl font-bold text-center mb-4">Our Services</h2>
+      <h2 className="text-3xl font-bold text-center mb-4">Additional Services</h2>
       <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
         Connect with professional content creators who understand the restaurant industry
       </p>
-      <div className="grid grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {categories.map((category) => (
           <Card key={category.title} className="card-hover cursor-pointer">
             <CardContent className="flex flex-col items-center text-center p-6">
