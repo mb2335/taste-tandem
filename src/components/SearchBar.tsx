@@ -1,187 +1,189 @@
-import { useState, useCallback, useEffect } from "react";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
-import { Search, X } from "lucide-react";
+import React, { useState } from "react";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Search, X, Instagram, Camera, Video, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
-interface Tag {
-  id: string;
-  label: string;
-  category: string;
-}
+const suggestions = [
+  { label: "Vegan", icon: "🥗", category: "Cuisine" },
+  { label: "Food Photography", icon: <Camera className="h-4 w-4" />, category: "Content Type" },
+  { label: "Instagram", icon: <Instagram className="h-4 w-4" />, category: "Platform" },
+  { label: "TikTok", icon: <Video className="h-4 w-4" />, category: "Platform" },
+  { label: "Food Blogger", icon: "📝", category: "Role" },
+  { label: "Video Content", icon: <Video className="h-4 w-4" />, category: "Content Type" },
+];
 
-const predefinedTags: Tag[] = [
-  { id: "1", label: "Food Photography", category: "Content Type" },
-  { id: "2", label: "Recipe Development", category: "Expertise" },
-  { id: "3", label: "Restaurant Reviews", category: "Content Type" },
-  { id: "4", label: "Vegan", category: "Cuisine" },
-  { id: "5", label: "Fine Dining", category: "Specialty" },
-  { id: "6", label: "Asian Cuisine", category: "Cuisine" },
-  { id: "7", label: "Instagram", category: "Platform" },
-  { id: "8", label: "TikTok", category: "Platform" },
-  { id: "9", label: "YouTube", category: "Platform" },
+const popularCities = [
+  "New York, NY",
+  "Los Angeles, CA",
+  "Chicago, IL",
+  "Houston, TX",
+  "Miami, FL",
+  "San Francisco, CA",
+  "Seattle, WA",
+  "Austin, TX",
 ];
 
 export const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+  const [search, setSearch] = useState("");
+  const [location, setLocation] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
 
-  // Safely filter tags based on search term
-  useEffect(() => {
-    try {
-      if (!searchTerm) {
-        setFilteredTags([]);
-        return;
-      }
-
-      const filtered = predefinedTags.filter(
-        (tag) =>
-          tag.label.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !selectedTags.some((selected) => selected.id === tag.id)
-      );
-      setFilteredTags(filtered);
-    } catch (error) {
-      console.error("Error filtering tags:", error);
-      setFilteredTags([]);
-      toast.error("An error occurred while searching");
+  const handleSelect = (value: string) => {
+    if (!selectedFilters.includes(value)) {
+      setSelectedFilters([...selectedFilters, value]);
     }
-  }, [searchTerm, selectedTags]);
+    setSearch("");
+  };
 
-  const handleSelect = useCallback((tagId: string) => {
-    try {
-      const tag = predefinedTags.find((t) => t.id === tagId);
-      if (tag && !selectedTags.some((selected) => selected.id === tag.id)) {
-        setSelectedTags((prev) => [...prev, tag]);
-      }
-      setSearchTerm("");
-      setIsOpen(false);
-    } catch (error) {
-      console.error("Error selecting tag:", error);
-      toast.error("Unable to select tag");
-    }
-  }, [selectedTags]);
+  const handleLocationSelect = (city: string) => {
+    setLocation(city);
+    setShowLocationSuggestions(false);
+  };
 
-  const removeTag = useCallback((tagId: string) => {
-    try {
-      setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
-    } catch (error) {
-      console.error("Error removing tag:", error);
-      toast.error("Unable to remove tag");
-    }
-  }, []);
+  const removeFilter = (filter: string) => {
+    setSelectedFilters(selectedFilters.filter((f) => f !== filter));
+  };
 
-  const clearAll = useCallback(() => {
-    try {
-      setSearchTerm("");
-      setSelectedTags([]);
-      setIsOpen(false);
-      setFilteredTags([]);
-    } catch (error) {
-      console.error("Error clearing search:", error);
-      toast.error("Unable to clear search");
-    }
-  }, []);
+  const clearAll = () => {
+    setSearch("");
+    setLocation("");
+    setSelectedFilters([]);
+  };
 
-  const handleSearch = useCallback(() => {
-    try {
-      console.log("Searching with:", {
-        searchTerm,
-        selectedTags: selectedTags.map((tag) => tag.label),
-      });
-      // Implement actual search logic here
-    } catch (error) {
-      console.error("Error performing search:", error);
-      toast.error("Unable to perform search");
-    }
-  }, [searchTerm, selectedTags]);
-
-  const handleInputChange = useCallback((value: string) => {
-    try {
-      setSearchTerm(value || "");
-      setIsOpen(Boolean(value));
-    } catch (error) {
-      console.error("Error updating search term:", error);
-      setSearchTerm("");
-      toast.error("Unable to update search");
-    }
-  }, []);
+  const handleSearch = () => {
+    console.log("Searching with filters:", {
+      filters: selectedFilters,
+      location: location,
+    });
+    // Here you would implement the actual search functionality
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
-      <div className="relative">
-        <Command className="rounded-lg border shadow-md">
-          <div className="flex items-center border-b px-3">
-            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-            <CommandInput
-              placeholder="Search food influencers..."
-              value={searchTerm}
-              onValueChange={handleInputChange}
-              className="flex-1 h-11 bg-transparent outline-none placeholder:text-muted-foreground"
-            />
-            {(searchTerm || selectedTags.length > 0) && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={clearAll}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-          {isOpen && searchTerm && (
-            <CommandList>
-              {filteredTags.length > 0 ? (
-                <CommandGroup heading="Suggestions">
-                  {filteredTags.map((tag) => (
-                    <CommandItem
-                      key={tag.id}
-                      value={tag.id}
-                      onSelect={handleSelect}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
-                      <span className="text-sm text-muted-foreground">
-                        {tag.category}:
-                      </span>
-                      {tag.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ) : (
-                <CommandEmpty>No results found.</CommandEmpty>
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Command className="rounded-lg border shadow-md">
+            <div className="flex items-center border-b px-3">
+              <CommandInput
+                placeholder="Search food influencers..."
+                value={search}
+                onValueChange={setSearch}
+                className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              {(search || selectedFilters.length > 0) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={clearAll}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               )}
-            </CommandList>
+            </div>
+            {search && (
+              <CommandList>
+                <CommandEmpty>No results found.</CommandEmpty>
+                {Object.entries(
+                  suggestions.reduce((acc, suggestion) => {
+                    if (!acc[suggestion.category]) {
+                      acc[suggestion.category] = [];
+                    }
+                    if (
+                      suggestion.label
+                        .toLowerCase()
+                        .includes(search.toLowerCase()) &&
+                      !selectedFilters.includes(suggestion.label)
+                    ) {
+                      acc[suggestion.category].push(suggestion);
+                    }
+                    return acc;
+                  }, {} as Record<string, typeof suggestions>)
+                ).map(([category, items]) => (
+                  items.length > 0 && (
+                    <CommandGroup key={category} heading={category}>
+                      {items.map((suggestion) => (
+                        <CommandItem
+                          key={suggestion.label}
+                          value={suggestion.label}
+                          onSelect={handleSelect}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          {typeof suggestion.icon === "string" ? (
+                            <span>{suggestion.icon}</span>
+                          ) : (
+                            suggestion.icon
+                          )}
+                          {suggestion.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  )
+                ))}
+              </CommandList>
+            )}
+          </Command>
+        </div>
+
+        <div className="relative">
+          <div className="flex items-center h-[45px]">
+            <div className="relative">
+              <Input
+                placeholder="Location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onFocus={() => setShowLocationSuggestions(true)}
+                className="w-[200px] h-[45px] pl-8"
+              />
+              <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            </div>
+            <Button 
+              className="ml-2 bg-primary hover:bg-primary/90 h-[45px]" 
+              onClick={handleSearch}
+            >
+              Search
+            </Button>
+          </div>
+
+          {showLocationSuggestions && location.length > 0 && (
+            <div className="absolute z-10 mt-1 w-[200px] bg-white rounded-md border shadow-lg">
+              <div className="py-1">
+                {popularCities
+                  .filter(city =>
+                    city.toLowerCase().includes(location.toLowerCase())
+                  )
+                  .map((city) => (
+                    <div
+                      key={city}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleLocationSelect(city)}
+                    >
+                      {city}
+                    </div>
+                  ))}
+              </div>
+            </div>
           )}
-        </Command>
+        </div>
       </div>
 
-      {selectedTags.length > 0 && (
+      {selectedFilters.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {selectedTags.map((tag) => (
+          {selectedFilters.map((filter) => (
             <Badge
-              key={tag.id}
+              key={filter}
               variant="secondary"
               className="flex items-center gap-1"
             >
-              <span className="text-xs text-muted-foreground">
-                {tag.category}:
-              </span>
-              {tag.label}
+              {filter}
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => removeTag(tag.id)}
+                onClick={() => removeFilter(filter)}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -189,10 +191,6 @@ export const SearchBar = () => {
           ))}
         </div>
       )}
-
-      <Button className="w-full" onClick={handleSearch}>
-        Search
-      </Button>
     </div>
   );
 };
