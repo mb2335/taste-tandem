@@ -26,6 +26,13 @@ export const GigsList = ({
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentGigs = gigs.slice(startIndex, endIndex);
 
+  const handleExploreMore = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center mb-8">
@@ -76,10 +83,9 @@ export const GigsList = ({
             )}
             
             <Button 
-              variant="default" 
               size="lg"
-              className="bg-primary hover:bg-primary/90"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-primary hover:bg-primary/90 text-white"
+              onClick={handleExploreMore}
             >
               Explore More Profiles
             </Button>

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Clock, Instagram, TrendingUp, Camera, Video, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, Clock, Instagram, TrendingUp, Camera, Video } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -67,7 +67,7 @@ export const GigCard = ({
   return (
     <Card className="w-full max-w-sm mx-auto">
       <CardHeader className="p-0">
-        <div className="relative">
+        <div className="relative group">
           <Carousel className="w-full">
             <CarouselContent>
               {allImages.map((img, index) => (
@@ -88,8 +88,8 @@ export const GigCard = ({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 hover:bg-white" />
-            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 hover:bg-white" />
+            <CarouselPrevious className="opacity-0 group-hover:opacity-100 transition-opacity absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 hover:bg-white" />
+            <CarouselNext className="opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 hover:bg-white" />
           </Carousel>
         </div>
       </CardHeader>
