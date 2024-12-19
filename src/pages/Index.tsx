@@ -86,11 +86,10 @@ const Index = () => {
       );
     }
 
-    if (filters.budget?.priceRange) {
-      const [min, max] = filters.budget.priceRange;
+    if (filters.budget?.maxAmount) {
       filtered = filtered.filter(gig => {
         const price = parseInt(gig.price.replace(/[^0-9]/g, ""));
-        return price >= min && price <= max;
+        return price <= filters.budget.maxAmount;
       });
     }
 
@@ -122,7 +121,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen">
       <Hero />
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">

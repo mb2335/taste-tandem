@@ -34,7 +34,6 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
   });
 
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [currentSort, setCurrentSort] = useState("price-asc");
 
   const handleFilterChange = (category: string, subcategory: string, value: any) => {
     const newFilters = {
@@ -57,11 +56,6 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
                (!Array.isArray(value) && (value === "" || value === false))) {
       setActiveFilters(activeFilters.filter(f => f !== filterKey));
     }
-  };
-
-  const handleSortChange = (value: string) => {
-    setCurrentSort(value);
-    // You can add logic here to sort the results based on the selected value
   };
 
   const clearFilters = () => {
@@ -180,7 +174,7 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
           className="w-full"
           onClick={clearFilters}
         >
-          Clear All Filters
+          Clear All Categories
         </Button>
       </div>
     </div>
