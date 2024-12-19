@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { HelpCircle } from "lucide-react";
 
 export const FAQSection = () => {
-  const { data: faqs, isLoading } = useQuery({
+  const { data: faqs, isLoading, error } = useQuery({
     queryKey: ['faqs'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -17,7 +17,10 @@ export const FAQSection = () => {
         .select('*')
         .order('category');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching FAQs:', error);
+        throw error;
+      }
       return data || [];
     },
   });
@@ -34,6 +37,11 @@ export const FAQSection = () => {
         </div>
       </section>
     );
+  }
+
+  if (error) {
+    console.error('Error in FAQSection:', error);
+    return null;
   }
 
   // Group FAQs by category

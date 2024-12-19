@@ -5,7 +5,7 @@ import { BookOpen, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const BlogSection = () => {
-  const { data: blogs, isLoading } = useQuery({
+  const { data: blogs, isLoading, error } = useQuery({
     queryKey: ['featured-blogs'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -14,7 +14,10 @@ export const BlogSection = () => {
         .limit(3)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching blogs:', error);
+        throw error;
+      }
       return data || [];
     },
   });
@@ -31,6 +34,11 @@ export const BlogSection = () => {
         </div>
       </section>
     );
+  }
+
+  if (error) {
+    console.error('Error in BlogSection:', error);
+    return null;
   }
 
   return (
