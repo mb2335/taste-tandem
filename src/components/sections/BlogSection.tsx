@@ -9,6 +9,7 @@ export const BlogSection = () => {
   const { data: blogs, isLoading, error } = useQuery({
     queryKey: ['featured-blogs'],
     queryFn: async () => {
+      console.log('Fetching blog posts...');
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
@@ -19,9 +20,22 @@ export const BlogSection = () => {
         console.error('Error fetching blogs:', error);
         throw error;
       }
+      
+      console.log('Fetched blog posts:', data);
       return data || [];
     },
   });
+
+  if (error) {
+    console.error('Error in BlogSection:', error);
+    return (
+      <div className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-red-500">Failed to load blog posts. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -37,11 +51,6 @@ export const BlogSection = () => {
     );
   }
 
-  if (error) {
-    console.error('Error in BlogSection:', error);
-    return null;
-  }
-
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,29 +62,35 @@ export const BlogSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {blogs?.map((blog) => (
-            <Card key={blog.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-              <CardHeader className="p-0">
-                <img
-                  src={blog.image_url}
-                  alt={blog.title}
-                  className="w-full h-48 object-cover"
-                />
-              </CardHeader>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-xl mb-2 line-clamp-2">{blog.title}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">{blog.excerpt}</p>
-                <Link to={`/blog/${blog.id}`}>
-                  <Button variant="outline" className="w-full group">
-                    Read More 
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {blogs && blogs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {blogs.map((blog) => (
+              <Card key={blog.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="p-0">
+                  <img
+                    src={blog.image_url}
+                    alt={blog.title}
+                    className="w-full h-48 object-cover"
+                  />
+                </CardHeader>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-xl mb-2 line-clamp-2">{blog.title}</h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">{blog.excerpt}</p>
+                  <Link to={`/blog/${blog.id}`}>
+                    <Button variant="outline" className="w-full group">
+                      Read More 
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center mb-12">
+            <p className="text-gray-500">No blog posts available at the moment.</p>
+          </div>
+        )}
 
         <div className="text-center">
           <Link to="/blog">
