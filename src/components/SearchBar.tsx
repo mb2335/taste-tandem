@@ -58,8 +58,23 @@ export const SearchBar = () => {
       filters: selectedFilters,
       location: location,
     });
-    // Here you would implement the actual search functionality
   };
+
+  // Group suggestions by category
+  const groupedSuggestions = search
+    ? suggestions.reduce((acc, suggestion) => {
+        if (
+          suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
+          !selectedFilters.includes(suggestion.label)
+        ) {
+          if (!acc[suggestion.category]) {
+            acc[suggestion.category] = [];
+          }
+          acc[suggestion.category].push(suggestion);
+        }
+        return acc;
+      }, {} as Record<string, typeof suggestions>)
+    : {};
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
@@ -87,22 +102,7 @@ export const SearchBar = () => {
             {search && (
               <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
-                {Object.entries(
-                  suggestions.reduce((acc, suggestion) => {
-                    if (!acc[suggestion.category]) {
-                      acc[suggestion.category] = [];
-                    }
-                    if (
-                      suggestion.label
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) &&
-                      !selectedFilters.includes(suggestion.label)
-                    ) {
-                      acc[suggestion.category].push(suggestion);
-                    }
-                    return acc;
-                  }, {} as Record<string, typeof suggestions>)
-                ).map(([category, items]) => (
+                {Object.entries(groupedSuggestions).map(([category, items]) => (
                   items.length > 0 && (
                     <CommandGroup key={category} heading={category}>
                       {items.map((suggestion) => (
