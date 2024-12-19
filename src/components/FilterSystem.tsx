@@ -7,6 +7,7 @@ import { AudienceDemographicsFilter } from "./filters/AudienceDemographicsFilter
 import { FoodTypesFilter } from "./filters/FoodTypesFilter";
 import { PlatformFilter } from "./filters/PlatformFilter";
 import { ContentTypeFilter } from "./filters/ContentTypeFilter";
+import { BudgetFilter } from "./filters/BudgetFilter";
 
 interface FilterSystemProps {
   onFilterChange: (filters: any) => void;
@@ -25,6 +26,10 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
     },
     niche: {
       foodTypes: []
+    },
+    budget: {
+      maxAmount: 1000,
+      requiresFoodCredit: false
     }
   });
 
@@ -43,9 +48,12 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
     
     // Update active filters
     const filterKey = `${category}-${subcategory}`;
-    if (!activeFilters.includes(filterKey) && value?.length > 0) {
+    if (!activeFilters.includes(filterKey) && 
+        ((Array.isArray(value) && value.length > 0) || 
+         (!Array.isArray(value) && value !== "" && value !== false))) {
       setActiveFilters([...activeFilters, filterKey]);
-    } else if (value?.length === 0) {
+    } else if ((Array.isArray(value) && value.length === 0) || 
+               (!Array.isArray(value) && (value === "" || value === false))) {
       setActiveFilters(activeFilters.filter(f => f !== filterKey));
     }
   };
@@ -62,6 +70,10 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
       },
       niche: {
         foodTypes: []
+      },
+      budget: {
+        maxAmount: 1000,
+        requiresFoodCredit: false
       }
     });
     setActiveFilters([]);
@@ -89,7 +101,8 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
                 className="h-4 w-4 p-0"
                 onClick={() => {
                   const [category, subcategory] = filter.split("-");
-                  handleFilterChange(category, subcategory, []);
+                  handleFilterChange(category, subcategory, 
+                    Array.isArray(filters[category][subcategory]) ? [] : "");
                 }}
               >
                 <X className="h-3 w-3" />
@@ -138,6 +151,16 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
           <AccordionTrigger>Content Types</AccordionTrigger>
           <AccordionContent>
             <ContentTypeFilter
+              filters={filters}
+              onFilterChange={handleFilterChange}
+            />
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="budget">
+          <AccordionTrigger>Budget</AccordionTrigger>
+          <AccordionContent>
+            <BudgetFilter
               filters={filters}
               onFilterChange={handleFilterChange}
             />
