@@ -35,7 +35,7 @@ export const SearchBar = () => {
 
   const handleSelect = (value: string) => {
     if (!selectedFilters.includes(value)) {
-      setSelectedFilters([...selectedFilters, value]);
+      setSelectedFilters((prev) => [...prev, value]);
     }
     setSearch("");
     setShowSuggestions(false);
@@ -47,7 +47,7 @@ export const SearchBar = () => {
   };
 
   const removeFilter = (filter: string) => {
-    setSelectedFilters(selectedFilters.filter((f) => f !== filter));
+    setSelectedFilters((prev) => prev.filter((f) => f !== filter));
   };
 
   const clearAll = () => {
@@ -63,25 +63,21 @@ export const SearchBar = () => {
     });
   };
 
-  // Filter and group suggestions
-  const filteredSuggestions = suggestions.filter(suggestion => 
+  // Filter suggestions based on search input
+  const filteredSuggestions = suggestions.filter((suggestion) =>
     suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
     !selectedFilters.includes(suggestion.label)
   );
 
-  // Initialize groupedSuggestions
-  const groupedSuggestions: GroupedSuggestions = {};
-  
-  // Only group suggestions if there are filtered results
-  if (filteredSuggestions.length > 0) {
-    filteredSuggestions.forEach(suggestion => {
-      const category = suggestion.category;
-      if (!groupedSuggestions[category]) {
-        groupedSuggestions[category] = [];
-      }
-      groupedSuggestions[category].push(suggestion);
-    });
-  }
+  // Group filtered suggestions by category
+  const groupedSuggestions: GroupedSuggestions = filteredSuggestions.reduce((acc, suggestion) => {
+    const category = suggestion.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(suggestion);
+    return acc;
+  }, {} as GroupedSuggestions);
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
