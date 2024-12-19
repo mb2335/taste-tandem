@@ -1,4 +1,3 @@
-import { Hero } from "@/components/Hero";
 import { SearchSection } from "@/components/SearchSection";
 import { GigCard } from "@/components/GigCard";
 import { CategorySection } from "@/components/CategorySection";
@@ -8,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RoleSelection } from "@/components/RoleSelection";
 import { LogOut } from "lucide-react";
-import { DashboardLayout } from "@/components/DashboardLayout";
+import { DashboardLayout, Goal } from "@/components/DashboardLayout";
 
 const gigs = [
   {
@@ -51,6 +50,8 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | undefined>();
+  const [filteredGigs, setFilteredGigs] = useState(gigs);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -77,6 +78,17 @@ const Index = () => {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    if (selectedGoal) {
+      const filtered = gigs.filter(gig => 
+        gig.tags.some(tag => selectedGoal.services.includes(tag))
+      );
+      setFilteredGigs(filtered);
+    } else {
+      setFilteredGigs(gigs);
+    }
+  }, [selectedGoal]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setIsAuthenticated(false);
@@ -92,7 +104,7 @@ const Index = () => {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout onGoalSelect={setSelectedGoal} selectedGoal={selectedGoal}>
       {isAuthenticated && (
         <div className="absolute top-4 right-4">
           <Button variant="ghost" onClick={handleSignOut}>
@@ -105,8 +117,9 @@ const Index = () => {
       <div className="max-w-4xl mx-auto mb-12">
         <h1 className="text-4xl font-bold mb-4">Welcome to Taste Tandem</h1>
         <p className="text-lg text-muted-foreground">
-          Select your business goal from the sidebar to discover curated influencer services 
-          that will help you achieve your objectives.
+          {selectedGoal 
+            ? `Discover ${selectedGoal.title.toLowerCase()} solutions tailored for your restaurant.`
+            : "Select your business goal from the sidebar to discover curated influencer services that will help you achieve your objectives."}
         </p>
       </div>
 
@@ -114,13 +127,22 @@ const Index = () => {
       
       <div className="max-w-7xl mx-auto py-16">
         <h2 className="text-3xl font-bold text-center mb-12">
-          {userRole === "restaurant" ? "Top-Rated Food Influencers" : "Restaurant Opportunities"}
+          {selectedGoal 
+            ? `${selectedGoal.title} Solutions`
+            : userRole === "restaurant" 
+              ? "Top-Rated Food Influencers" 
+              : "Restaurant Opportunities"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {gigs.map((gig) => (
+          {filteredGigs.map((gig) => (
             <GigCard key={gig.title} {...gig} />
           ))}
         </div>
+        {filteredGigs.length === 0 && (
+          <p className="text-center text-muted-foreground mt-8">
+            No services found for this goal. Please try another goal or contact us for custom solutions.
+          </p>
+        )}
       </div>
 
       <CategorySection />
