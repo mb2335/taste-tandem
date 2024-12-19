@@ -13,10 +13,33 @@ export const RoleSelection = () => {
   const handleRoleSelection = async (role: "restaurant" | "influencer") => {
     try {
       setLoading(true);
+      
+      // First check if the user exists and is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Please sign in first");
+        navigate("/auth");
+        return;
+      }
+
+      // Then check if a profile exists for this user
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile) {
+        toast.error("Profile not found. Please try signing in again.");
+        return;
+      }
+
+      // Update the profile with the selected role
       const { error } = await supabase
         .from("profiles")
         .update({ role })
-        .eq("id", (await supabase.auth.getUser()).data.user?.id);
+        .eq("id", user.id);
 
       if (error) throw error;
 
