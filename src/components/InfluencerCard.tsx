@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Instagram, Youtube, Star } from "lucide-react";
+import { Instagram, Youtube, Star, TrendingUp, Package, Timer } from "lucide-react";
 
 interface InfluencerCardProps {
   name: string;
@@ -10,6 +10,25 @@ interface InfluencerCardProps {
   rating: number;
   specialties: string[];
   price: string;
+  results?: {
+    metric: string;
+    value: string;
+  }[];
+  packages?: {
+    name: string;
+    price: string;
+    features: string[];
+  }[];
+  timeline?: {
+    phase: string;
+    duration: string;
+  }[];
+  engagement?: string;
+  beforeAfterImages?: {
+    before: string;
+    after: string;
+    description: string;
+  }[];
 }
 
 export const InfluencerCard = ({
@@ -19,6 +38,11 @@ export const InfluencerCard = ({
   rating,
   specialties,
   price,
+  results = [],
+  packages = [],
+  timeline = [],
+  engagement,
+  beforeAfterImages = [],
 }: InfluencerCardProps) => {
   return (
     <Card className="card-hover">
@@ -37,10 +61,94 @@ export const InfluencerCard = ({
             <span>{rating}</span>
           </div>
         </div>
+
         <div className="flex items-center gap-2 mb-3">
           <Instagram className="h-4 w-4" />
           <span className="text-sm text-muted-foreground">{followers}</span>
+          {engagement && (
+            <>
+              <span className="text-muted-foreground">|</span>
+              <TrendingUp className="h-4 w-4" />
+              <span className="text-sm text-muted-foreground">{engagement}</span>
+            </>
+          )}
         </div>
+
+        {results.length > 0 && (
+          <div className="mb-3">
+            <h4 className="font-medium text-sm mb-2">Past Results</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {results.map((result, index) => (
+                <div key={index} className="bg-muted p-2 rounded">
+                  <div className="text-sm font-medium">{result.metric}</div>
+                  <div className="text-sm text-muted-foreground">{result.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {beforeAfterImages.length > 0 && (
+          <div className="mb-3">
+            <h4 className="font-medium text-sm mb-2">Before & After</h4>
+            <div className="space-y-2">
+              {beforeAfterImages.map((comparison, index) => (
+                <div key={index} className="grid grid-cols-2 gap-2">
+                  <div>
+                    <img
+                      src={comparison.before}
+                      alt="Before"
+                      className="w-full h-24 object-cover rounded"
+                    />
+                    <span className="text-xs text-muted-foreground">Before</span>
+                  </div>
+                  <div>
+                    <img
+                      src={comparison.after}
+                      alt="After"
+                      className="w-full h-24 object-cover rounded"
+                    />
+                    <span className="text-xs text-muted-foreground">After</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground col-span-2">
+                    {comparison.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {packages.length > 0 && (
+          <div className="mb-3">
+            <h4 className="font-medium text-sm mb-2">Available Packages</h4>
+            <div className="space-y-2">
+              {packages.map((pkg, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Package className="h-4 w-4" />
+                  <span className="text-sm">{pkg.name}</span>
+                  <span className="text-sm text-muted-foreground">from {pkg.price}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {timeline.length > 0 && (
+          <div className="mb-3">
+            <h4 className="font-medium text-sm mb-2">Project Timeline</h4>
+            <div className="space-y-2">
+              {timeline.map((phase, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Timer className="h-4 w-4" />
+                  <span className="text-sm">{phase.phase}</span>
+                  <span className="text-sm text-muted-foreground">{phase.duration}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-2 mb-3">
           {specialties.map((specialty) => (
             <Badge key={specialty} variant="secondary">
