@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Command,
   CommandInput,
@@ -10,6 +10,7 @@ import {
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface Tag {
   id: string;
@@ -30,43 +31,90 @@ const predefinedTags: Tag[] = [
 ];
 
 export const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
 
-  const filteredTags = searchTerm
-    ? predefinedTags.filter(
+  // Safely filter tags based on search term
+  useEffect(() => {
+    try {
+      if (!searchTerm) {
+        setFilteredTags([]);
+        return;
+      }
+
+      const filtered = predefinedTags.filter(
         (tag) =>
           tag.label.toLowerCase().includes(searchTerm.toLowerCase()) &&
           !selectedTags.some((selected) => selected.id === tag.id)
-      )
-    : [];
+      );
+      setFilteredTags(filtered);
+    } catch (error) {
+      console.error("Error filtering tags:", error);
+      setFilteredTags([]);
+      toast.error("An error occurred while searching");
+    }
+  }, [searchTerm, selectedTags]);
 
   const handleSelect = useCallback((tagId: string) => {
-    const tag = predefinedTags.find((t) => t.id === tagId);
-    if (tag && !selectedTags.some((selected) => selected.id === tag.id)) {
-      setSelectedTags((prev) => [...prev, tag]);
+    try {
+      const tag = predefinedTags.find((t) => t.id === tagId);
+      if (tag && !selectedTags.some((selected) => selected.id === tag.id)) {
+        setSelectedTags((prev) => [...prev, tag]);
+      }
+      setSearchTerm("");
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error selecting tag:", error);
+      toast.error("Unable to select tag");
     }
-    setSearchTerm("");
-    setIsOpen(false);
   }, [selectedTags]);
 
   const removeTag = useCallback((tagId: string) => {
-    setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
+    try {
+      setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagId));
+    } catch (error) {
+      console.error("Error removing tag:", error);
+      toast.error("Unable to remove tag");
+    }
   }, []);
 
   const clearAll = useCallback(() => {
-    setSearchTerm("");
-    setSelectedTags([]);
-    setIsOpen(false);
+    try {
+      setSearchTerm("");
+      setSelectedTags([]);
+      setIsOpen(false);
+      setFilteredTags([]);
+    } catch (error) {
+      console.error("Error clearing search:", error);
+      toast.error("Unable to clear search");
+    }
   }, []);
 
   const handleSearch = useCallback(() => {
-    console.log("Searching with:", {
-      searchTerm,
-      selectedTags: selectedTags.map((tag) => tag.label),
-    });
+    try {
+      console.log("Searching with:", {
+        searchTerm,
+        selectedTags: selectedTags.map((tag) => tag.label),
+      });
+      // Implement actual search logic here
+    } catch (error) {
+      console.error("Error performing search:", error);
+      toast.error("Unable to perform search");
+    }
   }, [searchTerm, selectedTags]);
+
+  const handleInputChange = useCallback((value: string) => {
+    try {
+      setSearchTerm(value || "");
+      setIsOpen(Boolean(value));
+    } catch (error) {
+      console.error("Error updating search term:", error);
+      setSearchTerm("");
+      toast.error("Unable to update search");
+    }
+  }, []);
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
@@ -77,10 +125,7 @@ export const SearchBar = () => {
             <CommandInput
               placeholder="Search food influencers..."
               value={searchTerm}
-              onValueChange={(value) => {
-                setSearchTerm(value);
-                setIsOpen(true);
-              }}
+              onValueChange={handleInputChange}
               className="flex-1 h-11 bg-transparent outline-none placeholder:text-muted-foreground"
             />
             {(searchTerm || selectedTags.length > 0) && (
@@ -145,10 +190,7 @@ export const SearchBar = () => {
         </div>
       )}
 
-      <Button 
-        className="w-full" 
-        onClick={handleSearch}
-      >
+      <Button className="w-full" onClick={handleSearch}>
         Search
       </Button>
     </div>
