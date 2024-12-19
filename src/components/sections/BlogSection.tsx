@@ -54,7 +54,7 @@ export const BlogSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {blogs?.map((blog) => (
-            <Card key={blog.id} className="overflow-hidden card-hover">
+            <Card key={blog.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <CardHeader className="p-0">
                 <img
                   src={blog.image_url}

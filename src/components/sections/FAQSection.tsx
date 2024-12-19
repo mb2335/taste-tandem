@@ -74,7 +74,7 @@ export const FAQSection = () => {
                 {categoryFaqs?.map((faq) => (
                   <AccordionItem 
                     key={faq.id} 
-                    value={faq.id} 
+                    value={faq.id.toString()} 
                     className="border-b border-gray-200 last:border-0"
                   >
                     <AccordionTrigger className="text-left py-4 hover:no-underline">
