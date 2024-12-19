@@ -6,8 +6,26 @@ import { useEffect, useState } from "react";
 import { FilterSystem } from "@/components/FilterSystem";
 import { SortBy } from "@/components/SortBy";
 
-const gigs = [
+interface Gig {
+  id?: string;
+  name: string;
+  title: string;
+  description: string;
+  price: string;
+  deliveryTime: string;
+  rating: number;
+  engagement: string;
+  followers: string;
+  image: string;
+  tags: string[];
+  platforms: string[];
+  contentType: string;
+  portfolio: string[];
+}
+
+const gigs: Gig[] = [
   {
+    id: "1", // Added ID
     name: "Sarah Chen",
     title: "Food & Lifestyle Content Creator",
     description: "Specializing in authentic Asian cuisine and modern fusion dishes",
@@ -27,6 +45,7 @@ const gigs = [
     ]
   },
   {
+    id: "2", // Added ID
     name: "Marcus Rodriguez",
     title: "Restaurant & Bar Specialist",
     description: "Creating engaging content for upscale dining establishments",
@@ -46,6 +65,7 @@ const gigs = [
     ]
   },
   {
+    id: "3", // Added ID
     name: "Emma Thompson",
     title: "Healthy Food Influencer",
     description: "Passionate about creating content for health-conscious restaurants",
@@ -97,7 +117,7 @@ const Index = () => {
 
       if (data) {
         const profileIds = data.map(tag => tag.profile_id);
-        filtered = filtered.filter(gig => profileIds.includes(gig.id));
+        filtered = filtered.filter(gig => gig.id && profileIds.includes(gig.id));
       }
     }
 
@@ -110,7 +130,7 @@ const Index = () => {
 
       if (data) {
         const profileIds = data.map(tag => tag.profile_id);
-        filtered = filtered.filter(gig => profileIds.includes(gig.id));
+        filtered = filtered.filter(gig => gig.id && profileIds.includes(gig.id));
       }
     }
 
@@ -160,7 +180,7 @@ const Index = () => {
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredGigs.map((gig, index) => (
-                <GigCard key={index} {...gig} />
+                <GigCard key={gig.id || index} {...gig} />
               ))}
             </div>
           </div>
