@@ -2,52 +2,68 @@ import { Hero } from "@/components/Hero";
 import { SearchSection } from "@/components/SearchSection";
 import { GigCard } from "@/components/GigCard";
 import { CategorySection } from "@/components/CategorySection";
-
-const gigs = [
-  {
-    title: "Professional Food Photography Package",
-    description: "High-quality photos of your restaurant's signature dishes",
-    price: "$299",
-    deliveryTime: "3-5 days delivery",
-    rating: 4.9,
-    engagement: "5.2%",
-    followers: "120K",
-    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
-    tags: ["Photography", "Social Media", "Branding"],
-  },
-  {
-    title: "TikTok Restaurant Promotion",
-    description: "Viral-worthy TikTok content for your restaurant",
-    price: "$399",
-    deliveryTime: "7 days delivery",
-    rating: 4.8,
-    engagement: "6.1%",
-    followers: "85K",
-    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
-    tags: ["TikTok", "Video", "Social Media"],
-  },
-  {
-    title: "Instagram Story & Post Bundle",
-    description: "Comprehensive Instagram coverage of your venue",
-    price: "$499",
-    deliveryTime: "5-7 days delivery",
-    rating: 5.0,
-    engagement: "4.8%",
-    followers: "200K",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
-    tags: ["Instagram", "Content Creation", "Stories"],
-  },
-];
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { RoleSelection } from "@/components/RoleSelection";
+import { LogOut } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        setUserRole(profile?.role || null);
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userRole) {
+    return <RoleSelection />;
+  }
+
   return (
     <div className="min-h-screen">
+      <div className="absolute top-4 right-4">
+        <Button variant="ghost" onClick={handleSignOut}>
+          <LogOut className="h-4 w-4 mr-2" />
+          Sign Out
+        </Button>
+      </div>
       <Hero />
       <SearchSection />
       
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center mb-12">
-          Top-Rated Food Influencer Services
+          {userRole === "restaurant" ? "Top-Rated Food Influencers" : "Restaurant Opportunities"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {gigs.map((gig) => (
