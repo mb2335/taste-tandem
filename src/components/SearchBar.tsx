@@ -1,15 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
-import { Search, X, Instagram, Camera, Video, MapPin } from "lucide-react";
+import { Search, X, Instagram, Camera, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-
-type Suggestion = {
-  label: string;
-  icon: React.ReactNode | string;
-  category: string;
-};
+import { LocationSearch } from "./search/LocationSearch";
+import { SelectedFilters } from "./search/SelectedFilters";
+import { Suggestion, GroupedSuggestions } from "@/types/search";
 
 const suggestions: Suggestion[] = [
   { label: "Vegan", icon: "🥗", category: "Cuisine" },
@@ -57,7 +52,6 @@ export const SearchBar = () => {
 
   const clearAll = () => {
     setSearch("");
-    setLocation("");
     setSelectedFilters([]);
     setShowSuggestions(false);
   };
@@ -69,14 +63,13 @@ export const SearchBar = () => {
     });
   };
 
-  // Filter suggestions
+  // Filter and group suggestions
   const filteredSuggestions = suggestions.filter(suggestion => 
     suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
     !selectedFilters.includes(suggestion.label)
   );
 
-  // Group suggestions by category
-  const groupedSuggestions: Record<string, Suggestion[]> = {};
+  const groupedSuggestions: GroupedSuggestions = {};
   
   if (filteredSuggestions.length > 0) {
     filteredSuggestions.forEach(suggestion => {
@@ -145,69 +138,21 @@ export const SearchBar = () => {
           </Command>
         </div>
 
-        <div className="relative">
-          <div className="flex items-center h-[45px]">
-            <div className="relative">
-              <Input
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                onFocus={() => setShowLocationSuggestions(true)}
-                className="w-[200px] h-[45px] pl-8"
-              />
-              <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            </div>
-            <Button 
-              className="ml-2 bg-primary hover:bg-primary/90 h-[45px]" 
-              onClick={handleSearch}
-            >
-              Search
-            </Button>
-          </div>
-
-          {showLocationSuggestions && location.length > 0 && (
-            <div className="absolute z-10 mt-1 w-[200px] bg-white rounded-md border shadow-lg">
-              <div className="py-1">
-                {popularCities
-                  .filter(city =>
-                    city.toLowerCase().includes(location.toLowerCase())
-                  )
-                  .map((city) => (
-                    <div
-                      key={city}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleLocationSelect(city)}
-                    >
-                      {city}
-                    </div>
-                  ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <LocationSearch
+          location={location}
+          setLocation={setLocation}
+          showLocationSuggestions={showLocationSuggestions}
+          setShowLocationSuggestions={setShowLocationSuggestions}
+          handleLocationSelect={handleLocationSelect}
+          handleSearch={handleSearch}
+          popularCities={popularCities}
+        />
       </div>
 
-      {selectedFilters.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {selectedFilters.map((filter) => (
-            <Badge
-              key={filter}
-              variant="secondary"
-              className="flex items-center gap-1"
-            >
-              {filter}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => removeFilter(filter)}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          ))}
-        </div>
-      )}
+      <SelectedFilters
+        selectedFilters={selectedFilters}
+        removeFilter={removeFilter}
+      />
     </div>
   );
 };
