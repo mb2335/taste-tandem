@@ -8,40 +8,41 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RoleSelection } from "@/components/RoleSelection";
 import { LogOut } from "lucide-react";
+import { CategoryFilter } from "@/components/CategoryFilter";
 
 const gigs = [
   {
-    title: "Food Photography & Review",
-    description: "Professional food photography and honest review of your restaurant's signature dishes",
+    title: "Professional Brand Identity Package",
+    description: "Complete branding solution including logo, guidelines, and visual identity",
+    price: "$499",
+    deliveryTime: "7-10 days",
+    rating: 4.9,
+    engagement: "98%",
+    followers: "15K",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+    tags: ["Branding", "Logo Design", "Visual Identity"]
+  },
+  {
+    title: "Restaurant Interior Photography",
+    description: "High-quality photos of your restaurant's interior and ambiance",
     price: "$299",
     deliveryTime: "3-5 days",
     rating: 4.8,
-    engagement: "5.2%",
-    followers: "50K",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-    tags: ["Food Photography", "Instagram", "Review"]
-  },
-  {
-    title: "Instagram Story Feature",
-    description: "Featured story showcase of your restaurant's ambiance and menu highlights",
-    price: "$199",
-    deliveryTime: "1-2 days",
-    rating: 4.6,
-    engagement: "4.8%",
-    followers: "35K",
+    engagement: "95%",
+    followers: "20K",
     image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-    tags: ["Instagram Stories", "Social Media", "Feature"]
+    tags: ["Photography", "Interior Design", "Ambiance"]
   },
   {
-    title: "TikTok Restaurant Highlight",
-    description: "Viral-style TikTok video featuring your restaurant's unique aspects",
-    price: "$399",
+    title: "Custom Menu Design",
+    description: "Eye-catching menu design that reflects your brand identity",
+    price: "$199",
     deliveryTime: "4-6 days",
-    rating: 4.9,
-    engagement: "6.5%",
-    followers: "75K",
+    rating: 4.7,
+    engagement: "92%",
+    followers: "10K",
     image: "https://images.unsplash.com/photo-1552566626-52f8b828add9",
-    tags: ["TikTok", "Video Content", "Viral"]
+    tags: ["Menu Design", "Graphic Design", "Branding"]
   }
 ];
 
@@ -50,6 +51,8 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -82,6 +85,11 @@ const Index = () => {
     setUserRole(null);
   };
 
+  const handleFilterChange = (category: string, subcategory: string) => {
+    setSelectedCategory(category);
+    setSelectedSubcategory(subcategory);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -89,6 +97,15 @@ const Index = () => {
   if (isAuthenticated && !userRole) {
     return <RoleSelection />;
   }
+
+  const filteredGigs = selectedCategory
+    ? gigs.filter(gig => 
+        gig.tags.some(tag => 
+          tag === selectedSubcategory || 
+          tag === selectedCategory
+        )
+      )
+    : gigs;
 
   return (
     <div className="min-h-screen">
@@ -105,12 +122,23 @@ const Index = () => {
       
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center mb-12">
-          {userRole === "restaurant" ? "Top-Rated Food Influencers" : "Restaurant Opportunities"}
+          {userRole === "restaurant" ? "Find Creative Professionals" : "Browse Opportunities"}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {gigs.map((gig) => (
-            <GigCard key={gig.title} {...gig} />
-          ))}
+        
+        <div className="flex flex-col md:flex-row gap-8">
+          <CategoryFilter
+            onFilterChange={handleFilterChange}
+            selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
+          />
+          
+          <div className="flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredGigs.map((gig) => (
+                <GigCard key={gig.title} {...gig} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
