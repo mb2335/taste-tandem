@@ -4,8 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Star, Clock, Instagram, TrendingUp, Camera, Video, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface GigCardProps {
   name: string;
@@ -40,7 +47,6 @@ export const GigCard = ({
 }: GigCardProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const allImages = [image, ...portfolio];
 
   const handleViewDetails = async () => {
@@ -59,46 +65,32 @@ export const GigCard = ({
     console.log("Proceeding with booking for:", name);
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-  };
-
-  const previousImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
-  };
-
   return (
     <Card className="w-full max-w-sm mx-auto">
       <CardHeader className="p-0">
-        <div className="relative h-48">
-          <img
-            src={allImages[currentImageIndex]}
-            alt={`${name} - Image ${currentImageIndex + 1}`}
-            className="w-full h-48 object-cover rounded-t-lg"
-          />
-          <div className="absolute inset-0 flex items-center justify-between px-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 bg-black/40 hover:bg-black/60 text-white rounded-full"
-              onClick={previousImage}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 bg-black/40 hover:bg-black/60 text-white rounded-full"
-              onClick={nextImage}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-            <h3 className="font-semibold text-lg text-white">{name}</h3>
-            <p className="text-white/90 text-sm">{title}</p>
-          </div>
-        </div>
+        <Carousel className="w-full">
+          <CarouselContent>
+            {allImages.map((img, index) => (
+              <CarouselItem key={index}>
+                <div className="relative h-48">
+                  <img
+                    src={img}
+                    alt={`${name} - Image ${index + 1}`}
+                    className="w-full h-48 object-cover"
+                  />
+                  {index === 0 && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                      <h3 className="font-semibold text-lg text-white">{name}</h3>
+                      <p className="text-white/90 text-sm">{title}</p>
+                    </div>
+                  )}
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </CardHeader>
       <CardContent className="p-4">
         <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{description}</p>

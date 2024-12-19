@@ -1,12 +1,12 @@
 import { Hero } from "@/components/Hero";
-import { GigCard } from "@/components/GigCard";
 import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
-import { FilterSystem } from "@/components/FilterSystem";
-import { SortBy } from "@/components/SortBy";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { GigsSection } from "@/components/sections/GigsSection";
+import { PremiumSection } from "@/components/sections/PremiumSection";
+import { BlogSection } from "@/components/sections/BlogSection";
+import { FAQSection } from "@/components/sections/FAQSection";
+import { Footer } from "@/components/Footer";
 
 interface Gig {
   id?: string;
@@ -148,32 +148,9 @@ const sampleGigs: Gig[] = [
   }
 ];
 
-const ITEMS_PER_PAGE = 9;
-
 const Index = () => {
   const [currentSort, setCurrentSort] = useState("price-asc");
   const [filteredGigs, setFilteredGigs] = useState(sampleGigs);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [profileTags, setProfileTags] = useState([]);
-
-  const totalPages = Math.ceil(filteredGigs.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentGigs = filteredGigs.slice(startIndex, endIndex);
-
-  useEffect(() => {
-    fetchProfileTags();
-  }, []);
-
-  const fetchProfileTags = async () => {
-    const { data, error } = await supabase
-      .from('profile_tags')
-      .select('*');
-    
-    if (data) {
-      setProfileTags(data);
-    }
-  };
 
   const handleFilterChange = async (filters: any) => {
     let filtered = [...sampleGigs];
@@ -243,47 +220,18 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="md:w-64 sticky top-24 h-fit">
-            <FilterSystem
-              onFilterChange={handleFilterChange}
-              resultCount={filteredGigs.length}
-            />
-          </div>
-          
-          <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentGigs.map((gig, index) => (
-                <GigCard key={gig.id || index} {...gig} />
-              ))}
-            </div>
-
-            {totalPages > 1 && (
-              <div className="mt-8 flex justify-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-2" />
-                  Previous
-                </Button>
-                <span className="flex items-center">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
+        <GigsSection
+          gigs={filteredGigs}
+          onFilterChange={handleFilterChange}
+          onSortChange={handleSortChange}
+          currentSort={currentSort}
+        />
       </div>
+
+      <PremiumSection />
+      <BlogSection />
+      <FAQSection />
+      <Footer />
     </div>
   );
 };
