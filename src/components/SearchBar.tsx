@@ -60,20 +60,26 @@ export const SearchBar = () => {
     });
   };
 
-  // Filter and group suggestions
+  // Filter suggestions first
   const filteredSuggestions = suggestions.filter(suggestion => 
     suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
     !selectedFilters.includes(suggestion.label)
   );
 
-  // Group filtered suggestions by category
-  const groupedSuggestions = filteredSuggestions.reduce((acc, suggestion) => {
-    if (!acc[suggestion.category]) {
-      acc[suggestion.category] = [];
-    }
-    acc[suggestion.category].push(suggestion);
-    return acc;
-  }, {} as Record<string, typeof suggestions>);
+  // Only group suggestions if we have filtered results
+  const groupedSuggestions = filteredSuggestions.length > 0
+    ? filteredSuggestions.reduce((acc, suggestion) => {
+        const category = suggestion.category || 'Other';
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(suggestion);
+        return acc;
+      }, {} as Record<string, typeof suggestions>)
+    : {};
+
+  // Check if we have any groups with items
+  const hasResults = Object.keys(groupedSuggestions).length > 0;
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
@@ -99,9 +105,9 @@ export const SearchBar = () => {
                 </Button>
               )}
             </div>
-            {search && filteredSuggestions.length > 0 && (
+            {search && (
               <CommandList>
-                <CommandEmpty>No results found.</CommandEmpty>
+                {!hasResults && <CommandEmpty>No results found.</CommandEmpty>}
                 {Object.entries(groupedSuggestions).map(([category, items]) => (
                   <CommandGroup key={category} heading={category}>
                     {items.map((suggestion) => (
