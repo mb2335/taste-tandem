@@ -7,6 +7,7 @@ import { PremiumSection } from "@/components/sections/PremiumSection";
 import { BlogSection } from "@/components/sections/BlogSection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { Footer } from "@/components/Footer";
+import { SortBy } from "@/components/SortBy";
 
 interface Gig {
   id?: string;
