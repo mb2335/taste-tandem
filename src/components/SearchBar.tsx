@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
-import { Search, X, Instagram, Camera, Video, TikTok } from "lucide-react";
+import { Search, X, Instagram, Camera, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -8,7 +8,7 @@ const suggestions = [
   { label: "Vegan", icon: "🥗", category: "Cuisine" },
   { label: "Food Photography", icon: <Camera className="h-4 w-4" />, category: "Content Type" },
   { label: "Instagram", icon: <Instagram className="h-4 w-4" />, category: "Platform" },
-  { label: "TikTok", icon: <TikTok className="h-4 w-4" />, category: "Platform" },
+  { label: "TikTok", icon: <Video className="h-4 w-4" />, category: "Platform" },
   { label: "Food Blogger", icon: "📝", category: "Role" },
   { label: "Video Content", icon: <Video className="h-4 w-4" />, category: "Content Type" },
 ];
