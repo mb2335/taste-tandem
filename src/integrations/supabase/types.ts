@@ -9,6 +9,68 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string
+          title: string
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string
+          excerpt: string
+          id?: string
+          image_url: string
+          title: string
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          image_url?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      faqs: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          id: string
+          question: string
+        }
+        Insert: {
+          answer: string
+          category: string
+          created_at?: string
+          id?: string
+          question: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          id?: string
+          question?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
