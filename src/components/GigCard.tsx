@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 interface GigCardProps {
+  name: string;
   title: string;
   description: string;
   price: string;
@@ -22,6 +23,7 @@ interface GigCardProps {
 }
 
 export const GigCard = ({
+  name,
   title,
   description,
   price,
@@ -52,20 +54,25 @@ export const GigCard = ({
     }
     
     // Proceed with booking logic here
-    console.log("Proceeding with booking for:", title);
+    console.log("Proceeding with booking for:", name);
   };
 
   return (
     <Card className="card-hover">
       <CardHeader className="p-0">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-48 object-cover rounded-t-lg"
-        />
+        <div className="relative">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-48 object-cover rounded-t-lg"
+          />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+            <h3 className="font-semibold text-lg text-white">{name}</h3>
+            <p className="text-white/90 text-sm">{title}</p>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="p-4">
-        <h3 className="font-semibold text-lg mb-2">{title}</h3>
         <p className="text-muted-foreground text-sm mb-3">{description}</p>
         
         <div className="flex items-center gap-2 mb-3">
@@ -76,7 +83,7 @@ export const GigCard = ({
           <span className="text-sm text-muted-foreground">{followers}</span>
           <span className="text-muted-foreground">|</span>
           <TrendingUp className="h-4 w-4" />
-          <span className="text-sm text-muted-foreground">{engagement}</span>
+          <span className="text-sm text-muted-foreground">{engagement} engagement</span>
         </div>
 
         {contentType && (
@@ -87,6 +94,17 @@ export const GigCard = ({
           </div>
         )}
         
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          {portfolio.slice(0, 3).map((item, index) => (
+            <img
+              key={index}
+              src={item}
+              alt={`Portfolio ${index + 1}`}
+              className="w-full h-20 object-cover rounded-md"
+            />
+          ))}
+        </div>
+
         <div className="flex flex-wrap gap-2 mb-3">
           {tags.map((tag) => (
             <Badge key={tag} variant="secondary">

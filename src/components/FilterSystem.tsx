@@ -8,7 +8,6 @@ import { FoodTypesFilter } from "./filters/FoodTypesFilter";
 import { PlatformFilter } from "./filters/PlatformFilter";
 import { ContentTypeFilter } from "./filters/ContentTypeFilter";
 import { BudgetFilter } from "./filters/BudgetFilter";
-import { SortBy } from "./SortBy";
 
 interface FilterSystemProps {
   onFilterChange: (filters: any) => void;
@@ -92,8 +91,6 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Categories</h3>
       </div>
-
-      <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
 
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">

@@ -2,89 +2,75 @@ import { Hero } from "@/components/Hero";
 import { GigCard } from "@/components/GigCard";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { RoleSelection } from "@/components/RoleSelection";
-import { LogOut } from "lucide-react";
 import { FilterSystem } from "@/components/FilterSystem";
-import { Header } from "@/components/Header";
+import { SortBy } from "@/components/SortBy";
 
 const gigs = [
   {
-    title: "Professional Brand Identity Package",
-    description: "Complete branding solution including logo, guidelines, and visual identity",
-    price: "$499",
-    deliveryTime: "7-10 days",
-    rating: 4.9,
-    engagement: "98%",
-    followers: "15K",
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-    tags: ["Branding", "Logo Design", "Visual Identity"]
-  },
-  {
-    title: "Restaurant Interior Photography",
-    description: "High-quality photos of your restaurant's interior and ambiance",
+    name: "Sarah Chen",
+    title: "Food & Lifestyle Content Creator",
+    description: "Specializing in authentic Asian cuisine and modern fusion dishes",
     price: "$299",
     deliveryTime: "3-5 days",
-    rating: 4.8,
-    engagement: "95%",
-    followers: "20K",
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-    tags: ["Photography", "Interior Design", "Ambiance"]
+    rating: 4.9,
+    engagement: "5.2%",
+    followers: "125K",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+    tags: ["Asian Cuisine", "Food Photography", "Recipe Development"],
+    platforms: ["Instagram", "TikTok"],
+    contentType: "Photo & Video",
+    portfolio: [
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+      "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"
+    ]
   },
   {
-    title: "Custom Menu Design",
-    description: "Eye-catching menu design that reflects your brand identity",
-    price: "$199",
+    name: "Marcus Rodriguez",
+    title: "Restaurant & Bar Specialist",
+    description: "Creating engaging content for upscale dining establishments",
+    price: "$399",
     deliveryTime: "4-6 days",
+    rating: 4.8,
+    engagement: "4.8%",
+    followers: "85K",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+    tags: ["Fine Dining", "Cocktails", "Restaurant Reviews"],
+    platforms: ["YouTube", "Instagram"],
+    contentType: "Video",
+    portfolio: [
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de",
+      "https://images.unsplash.com/photo-1544025162-d76694265947",
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de"
+    ]
+  },
+  {
+    name: "Emma Thompson",
+    title: "Healthy Food Influencer",
+    description: "Passionate about creating content for health-conscious restaurants",
+    price: "$249",
+    deliveryTime: "2-4 days",
     rating: 4.7,
-    engagement: "92%",
-    followers: "10K",
-    image: "https://images.unsplash.com/photo-1552566626-52f8b828add9",
-    tags: ["Menu Design", "Graphic Design", "Branding"]
+    engagement: "6.1%",
+    followers: "95K",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
+    tags: ["Healthy Eating", "Vegan", "Food Styling"],
+    platforms: ["Instagram", "TikTok", "YouTube"],
+    contentType: "Photo & Video",
+    portfolio: [
+      "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe",
+      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+      "https://images.unsplash.com/photo-1498837167922-ddd27525d352"
+    ]
   }
 ];
 
 const Index = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentSort, setCurrentSort] = useState("price-asc");
   const [filteredGigs, setFilteredGigs] = useState(gigs);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setIsAuthenticated(!!session);
-        
-        if (session) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", session.user.id)
-            .single();
-          
-          setUserRole(profile?.role || null);
-        }
-      } catch (error) {
-        console.error("Error checking auth:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setIsAuthenticated(false);
-    setUserRole(null);
-  };
-
   const handleFilterChange = (filters: any) => {
-    // Apply filters to gigs
     let filtered = [...gigs];
 
     // Example filter logic (expand based on your needs)
@@ -111,31 +97,38 @@ const Index = () => {
     setFilteredGigs(filtered);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isAuthenticated && !userRole) {
-    return <RoleSelection />;
-  }
+  const handleSortChange = (value: string) => {
+    setCurrentSort(value);
+    const sorted = [...filteredGigs].sort((a, b) => {
+      switch (value) {
+        case "price-asc":
+          return parseInt(a.price.slice(1)) - parseInt(b.price.slice(1));
+        case "price-desc":
+          return parseInt(b.price.slice(1)) - parseInt(a.price.slice(1));
+        case "rating":
+          return b.rating - a.rating;
+        case "followers":
+          return parseInt(b.followers) - parseInt(a.followers);
+        case "engagement":
+          return parseFloat(b.engagement) - parseFloat(a.engagement);
+        case "reach":
+          return parseInt(b.followers) * (parseFloat(b.engagement)/100) - 
+                 parseInt(a.followers) * (parseFloat(a.engagement)/100);
+        default:
+          return 0;
+      }
+    });
+    setFilteredGigs(sorted);
+  };
 
   return (
     <div className="min-h-screen pt-16">
-      <Header />
-      {isAuthenticated && (
-        <div className="absolute top-4 right-4">
-          <Button variant="ghost" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
-      )}
       <Hero />
-      
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          {userRole === "restaurant" ? "Find Creative Professionals" : "Browse Opportunities"}
-        </h2>
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-bold">Browse Opportunities</h2>
+          <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
+        </div>
         
         <div className="flex flex-col md:flex-row gap-8">
           <FilterSystem
@@ -145,8 +138,8 @@ const Index = () => {
           
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredGigs.map((gig) => (
-                <GigCard key={gig.title} {...gig} />
+              {filteredGigs.map((gig, index) => (
+                <GigCard key={index} {...gig} />
               ))}
             </div>
           </div>
