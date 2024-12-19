@@ -130,19 +130,19 @@ export const SearchBar = () => {
         </div>
 
         <div className="relative">
-          <div className="flex items-center">
-            <div className="relative">
+          <div className="flex items-center h-[45px]"> {/* Adjusted height to match main search */}
+            <div className="relative flex-1">
               <Input
                 placeholder="Location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 onFocus={() => setShowLocationSuggestions(true)}
-                className="w-[200px] pl-8"
+                className="w-[200px] h-full pl-8"
               />
-              <MapPin className="absolute left-2 top-3 h-4 w-4 text-gray-400" />
+              <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
             <Button 
-              className="ml-2 bg-primary hover:bg-primary/90" 
+              className="ml-2 bg-primary hover:bg-primary/90 h-full" 
               onClick={handleSearch}
             >
               Search

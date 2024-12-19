@@ -36,13 +36,15 @@ export const SearchSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-            <Input
-              placeholder="Search food influencers..."
-              className="pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="relative">
+              <Input
+                placeholder="Search food influencers..."
+                className="pl-10 h-[45px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative">
@@ -53,9 +55,9 @@ export const SearchSection = () => {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     onFocus={() => setShowLocationSuggestions(true)}
-                    className="w-[160px] pl-8"
+                    className="w-[160px] pl-8 h-[45px]"
                   />
-                  <MapPin className="absolute left-2 top-3 h-4 w-4 text-gray-400" />
+                  <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 </div>
               </div>
 
@@ -83,7 +85,7 @@ export const SearchSection = () => {
               )}
             </div>
             <Select>
-              <SelectTrigger className="w-[160px]">
+              <SelectTrigger className="w-[160px] h-[45px]">
                 <DollarSign className="mr-2 h-4 w-4" />
                 <SelectValue placeholder="Budget" />
               </SelectTrigger>
@@ -93,12 +95,12 @@ export const SearchSection = () => {
                 <SelectItem value="high">$500+</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
+            <Button variant="outline" className="h-[45px]">
               <Filter className="mr-2 h-4 w-4" />
               More Filters
             </Button>
             <Button 
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 h-[45px]"
               onClick={handleSearch}
             >
               Search
