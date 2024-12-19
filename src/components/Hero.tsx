@@ -46,33 +46,6 @@ export const Hero = () => {
           </div>
         </div>
       </div>
-
-      {/* Clients Section */}
-      <div className="bg-white/95 backdrop-blur-sm py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-center text-gray-600 text-sm font-medium mb-8">
-            TRUSTED BY LEADING RESTAURANTS AND BRANDS
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center">
-            {[
-              { name: "McDonald's", logo: "M" },
-              { name: "Burger King", logo: "BK" },
-              { name: "Starbucks", logo: "★" },
-              { name: "Subway", logo: "S" },
-              { name: "Pizza Hut", logo: "PH" },
-              { name: "KFC", logo: "KFC" },
-            ].map((client) => (
-              <div
-                key={client.name}
-                className="h-12 w-24 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 font-bold text-xl"
-                title={client.name}
-              >
-                {client.logo}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

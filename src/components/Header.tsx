@@ -16,21 +16,27 @@ export const Header = () => {
           </Link>
           
           <nav className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" className="text-sm text-neutral-900">
-              <Crown className="mr-2 h-4 w-4" />
-              Premium
-            </Button>
-            <Button variant="ghost" className="text-sm text-neutral-900">
-              Explore
-            </Button>
+            <Link to="/premium">
+              <Button variant="ghost" className="text-sm text-neutral-900">
+                <Crown className="mr-2 h-4 w-4" />
+                Premium
+              </Button>
+            </Link>
+            <Link to="/explore">
+              <Button variant="ghost" className="text-sm text-neutral-900">
+                Explore
+              </Button>
+            </Link>
             <Link to="/services">
               <Button variant="ghost" className="text-sm text-neutral-900">
                 Additional Services
               </Button>
             </Link>
-            <Button variant="ghost" className="text-sm text-neutral-900">
-              I'm an Influencer
-            </Button>
+            <Link to="/influencer">
+              <Button variant="ghost" className="text-sm text-neutral-900">
+                I'm an Influencer
+              </Button>
+            </Link>
             <Button variant="default" className="text-sm bg-primary hover:bg-primary/90">
               <LogIn className="mr-2 h-4 w-4" />
               Sign In

@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Services from "./pages/Services";
 import Blog from "./pages/Blog";
+import Premium from "./pages/Premium";
+import Explore from "./pages/Explore";
+import Influencer from "./pages/Influencer";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -23,6 +26,9 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/services" element={<Services />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/premium" element={<Premium />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/influencer" element={<Influencer />} />
             <Route path="/" element={<Index />} />
           </Routes>
         </TooltipProvider>
