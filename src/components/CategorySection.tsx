@@ -1,34 +1,47 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, Video, Instagram, Calendar } from "lucide-react";
+import { Camera, Video, Instagram, Calendar, Star, MessageSquare, Megaphone } from "lucide-react";
 
 const categories = [
   {
     icon: Camera,
-    title: "Photography",
-    description: "Professional food photography services",
-  },
-  {
-    icon: Video,
-    title: "Video Content",
-    description: "Engaging food video creation",
+    title: "Content Creation",
+    description: "Professional food photography and video content",
   },
   {
     icon: Instagram,
     title: "Social Media",
-    description: "Platform-specific content strategy",
+    description: "Platform management and content strategy",
+  },
+  {
+    icon: Megaphone,
+    title: "Marketing",
+    description: "Strategic marketing and brand growth",
   },
   {
     icon: Calendar,
     title: "Event Coverage",
-    description: "Live event and launch coverage",
+    description: "Professional event documentation",
+  },
+  {
+    icon: Star,
+    title: "Review Management",
+    description: "Online reputation management",
+  },
+  {
+    icon: MessageSquare,
+    title: "Community",
+    description: "Engage with your audience",
   },
 ];
 
 export const CategorySection = () => {
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8">
-      <h2 className="text-3xl font-bold text-center mb-12">Our Services</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <h2 className="text-3xl font-bold text-center mb-4">Our Services</h2>
+      <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+        Connect with professional content creators who understand the restaurant industry
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => (
           <Card key={category.title} className="card-hover cursor-pointer">
             <CardContent className="flex flex-col items-center text-center p-6">

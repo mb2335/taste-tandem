@@ -6,52 +6,81 @@ export type ServiceCategory = {
 
 export const serviceCategories: ServiceCategory[] = [
   {
-    name: "Branding & Visual Identity",
-    subcategories: [
-      "Logo Design",
-      "Brand Guidelines",
-      "Color Palette",
-      "Typography",
-      "Tagline/Slogan Design"
-    ]
-  },
-  {
-    name: "Interior Design",
-    subcategories: [
-      "Space Layout and Floor Plan",
-      "Lighting Design",
-      "Furniture Selection",
-      "Wall Art & Decor",
-      "Signage & Wayfinding"
-    ]
-  },
-  {
-    name: "Graphic Design",
-    subcategories: [
-      "Menu Design",
-      "Promotional Materials",
-      "Gift Cards & Loyalty Cards",
-      "Packaging Design",
-      "Table Tents & Specials Signage"
-    ]
-  },
-  {
-    name: "Digital & Web Design",
-    subcategories: [
-      "Website Design",
-      "Social Media Graphics",
-      "Email Marketing Templates",
-      "Online Ordering System Design",
-      "Blog Design"
-    ]
-  },
-  {
-    name: "Photography & Videography",
+    name: "Content Creation",
     subcategories: [
       "Food Photography",
-      "Interior/Exterior Photography",
+      "Menu Photography",
+      "Interior Photography",
       "Video Content",
-      "Event Coverage"
+      "Social Media Content",
+      "TikTok Creation",
+      "Instagram Reels",
+      "YouTube Videos"
+    ]
+  },
+  {
+    name: "Social Media Management",
+    subcategories: [
+      "Instagram Management",
+      "TikTok Management",
+      "Facebook Management",
+      "Content Calendar",
+      "Community Engagement",
+      "Influencer Outreach"
+    ]
+  },
+  {
+    name: "Marketing Strategy",
+    subcategories: [
+      "Social Media Strategy",
+      "Content Strategy",
+      "Influencer Marketing",
+      "Email Marketing",
+      "Local SEO",
+      "Brand Storytelling"
+    ]
+  },
+  {
+    name: "Event Coverage",
+    subcategories: [
+      "Restaurant Opening",
+      "Special Events",
+      "Menu Launch",
+      "Behind the Scenes",
+      "Chef Interviews",
+      "Food Preparation"
+    ]
+  },
+  {
+    name: "Review Management",
+    subcategories: [
+      "Yelp Management",
+      "Google Reviews",
+      "TripAdvisor",
+      "Response Strategy",
+      "Review Generation"
     ]
   }
+];
+
+export const contentTypes = [
+  "Photography",
+  "Videography",
+  "Social Media Posts",
+  "Blog Posts",
+  "Website Content",
+  "Email Newsletters",
+  "Menu Descriptions",
+  "Press Releases"
+];
+
+export const platforms = [
+  "Instagram",
+  "TikTok",
+  "YouTube",
+  "Facebook",
+  "Twitter",
+  "LinkedIn",
+  "Pinterest",
+  "Google Business"
 ];
