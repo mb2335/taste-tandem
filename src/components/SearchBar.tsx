@@ -69,11 +69,13 @@ export const SearchBar = () => {
     !selectedFilters.includes(suggestion.label)
   );
 
+  // Initialize groupedSuggestions
   const groupedSuggestions: GroupedSuggestions = {};
   
+  // Only group suggestions if there are filtered results
   if (filteredSuggestions.length > 0) {
     filteredSuggestions.forEach(suggestion => {
-      const category = suggestion.category || 'Other';
+      const category = suggestion.category;
       if (!groupedSuggestions[category]) {
         groupedSuggestions[category] = [];
       }
