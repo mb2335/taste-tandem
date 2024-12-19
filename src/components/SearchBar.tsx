@@ -60,21 +60,20 @@ export const SearchBar = () => {
     });
   };
 
-  // Group suggestions by category
-  const groupedSuggestions = search
-    ? suggestions.reduce((acc, suggestion) => {
-        if (
-          suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
-          !selectedFilters.includes(suggestion.label)
-        ) {
-          if (!acc[suggestion.category]) {
-            acc[suggestion.category] = [];
-          }
-          acc[suggestion.category].push(suggestion);
-        }
-        return acc;
-      }, {} as Record<string, typeof suggestions>)
-    : {};
+  // Filter and group suggestions
+  const filteredSuggestions = suggestions.filter(suggestion => 
+    suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
+    !selectedFilters.includes(suggestion.label)
+  );
+
+  // Group filtered suggestions by category
+  const groupedSuggestions = filteredSuggestions.reduce((acc, suggestion) => {
+    if (!acc[suggestion.category]) {
+      acc[suggestion.category] = [];
+    }
+    acc[suggestion.category].push(suggestion);
+    return acc;
+  }, {} as Record<string, typeof suggestions>);
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
@@ -82,11 +81,12 @@ export const SearchBar = () => {
         <div className="relative flex-1">
           <Command className="rounded-lg border shadow-md">
             <div className="flex items-center border-b px-3">
+              <Search className="h-4 w-4 text-gray-400" />
               <CommandInput
                 placeholder="Search food influencers..."
                 value={search}
                 onValueChange={setSearch}
-                className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0 pl-2"
               />
               {(search || selectedFilters.length > 0) && (
                 <Button
@@ -99,29 +99,27 @@ export const SearchBar = () => {
                 </Button>
               )}
             </div>
-            {search && (
+            {search && filteredSuggestions.length > 0 && (
               <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 {Object.entries(groupedSuggestions).map(([category, items]) => (
-                  items.length > 0 && (
-                    <CommandGroup key={category} heading={category}>
-                      {items.map((suggestion) => (
-                        <CommandItem
-                          key={suggestion.label}
-                          value={suggestion.label}
-                          onSelect={handleSelect}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          {typeof suggestion.icon === "string" ? (
-                            <span>{suggestion.icon}</span>
-                          ) : (
-                            suggestion.icon
-                          )}
-                          {suggestion.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  )
+                  <CommandGroup key={category} heading={category}>
+                    {items.map((suggestion) => (
+                      <CommandItem
+                        key={suggestion.label}
+                        value={suggestion.label}
+                        onSelect={handleSelect}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        {typeof suggestion.icon === "string" ? (
+                          <span>{suggestion.icon}</span>
+                        ) : (
+                          suggestion.icon
+                        )}
+                        {suggestion.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
                 ))}
               </CommandList>
             )}
