@@ -99,6 +99,38 @@ export type Database = {
           },
         ]
       }
+      profile_tags: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          tag_category: string
+          tag_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          tag_category: string
+          tag_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          tag_category?: string
+          tag_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_tags_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

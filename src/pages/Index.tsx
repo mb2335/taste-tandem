@@ -1,6 +1,6 @@
 import { Hero } from "@/components/Hero";
 import { GigCard } from "@/components/GigCard";
-import { Button } from "@/components/ui/button";
+import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { FilterSystem } from "@/components/FilterSystem";
@@ -69,28 +69,49 @@ const gigs = [
 const Index = () => {
   const [currentSort, setCurrentSort] = useState("price-asc");
   const [filteredGigs, setFilteredGigs] = useState(gigs);
+  const [profileTags, setProfileTags] = useState([]);
 
-  const handleFilterChange = (filters: any) => {
+  useEffect(() => {
+    fetchProfileTags();
+  }, []);
+
+  const fetchProfileTags = async () => {
+    const { data, error } = await supabase
+      .from('profile_tags')
+      .select('*');
+    
+    if (data) {
+      setProfileTags(data);
+    }
+  };
+
+  const handleFilterChange = async (filters: any) => {
     let filtered = [...gigs];
 
-    // Example filter logic (expand based on your needs)
     if (filters.demographics?.ageGroups?.length > 0) {
-      // Filter by age groups
+      const { data } = await supabase
+        .from('profile_tags')
+        .select('profile_id')
+        .eq('tag_category', 'demographics')
+        .in('tag_name', filters.demographics.ageGroups);
+
+      if (data) {
+        const profileIds = data.map(tag => tag.profile_id);
+        filtered = filtered.filter(gig => profileIds.includes(gig.id));
+      }
     }
 
-    if (filters.contentStyle?.contentType?.length > 0) {
-      filtered = filtered.filter(gig => 
-        filters.contentStyle.contentType.some((type: string) => 
-          gig.tags.includes(type)
-        )
-      );
-    }
+    if (filters.contentStyle?.platforms?.length > 0) {
+      const { data } = await supabase
+        .from('profile_tags')
+        .select('profile_id')
+        .eq('tag_category', 'platform')
+        .in('tag_name', filters.contentStyle.platforms);
 
-    if (filters.budget?.maxAmount) {
-      filtered = filtered.filter(gig => {
-        const price = parseInt(gig.price.replace(/[^0-9]/g, ""));
-        return price <= filters.budget.maxAmount;
-      });
+      if (data) {
+        const profileIds = data.map(tag => tag.profile_id);
+        filtered = filtered.filter(gig => profileIds.includes(gig.id));
+      }
     }
 
     setFilteredGigs(filtered);
@@ -122,10 +143,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <Header />
       <Hero />
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold">Browse Opportunities</h2>
+          <h2 className="text-3xl font-bold whitespace-nowrap">Browse Opportunities</h2>
           <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
         </div>
         
