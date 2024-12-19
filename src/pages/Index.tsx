@@ -49,51 +49,57 @@ const Index = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const fetchUserRole = async () => {
+    const checkAuth = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single();
-
-        setUserRole(profile?.role || null);
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+        
+        if (session) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", session.user.id)
+            .single();
+          
+          setUserRole(profile?.role || null);
+        }
       } catch (error) {
-        console.error("Error fetching user role:", error);
+        console.error("Error checking auth:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserRole();
+    checkAuth();
   }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate("/auth");
+    setIsAuthenticated(false);
+    setUserRole(null);
   };
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!userRole) {
+  if (isAuthenticated && !userRole) {
     return <RoleSelection />;
   }
 
   return (
     <div className="min-h-screen">
-      <div className="absolute top-4 right-4">
-        <Button variant="ghost" onClick={handleSignOut}>
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
-        </Button>
-      </div>
+      {isAuthenticated && (
+        <div className="absolute top-4 right-4">
+          <Button variant="ghost" onClick={handleSignOut}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign Out
+          </Button>
+        </div>
+      )}
       <Hero />
       <SearchSection />
       

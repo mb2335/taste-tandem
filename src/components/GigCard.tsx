@@ -2,6 +2,9 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, Clock, Instagram, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface GigCardProps {
   title: string;
@@ -26,6 +29,26 @@ export const GigCard = ({
   image,
   tags,
 }: GigCardProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleViewDetails = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to proceed with checkout",
+        variant: "default",
+      });
+      navigate("/auth");
+      return;
+    }
+    
+    // Proceed with checkout logic here
+    console.log("Proceeding with checkout for:", title);
+  };
+
   return (
     <Card className="card-hover">
       <CardHeader className="p-0">
@@ -62,7 +85,7 @@ export const GigCard = ({
       </CardContent>
       <CardFooter className="flex justify-between items-center p-4 pt-0">
         <span className="font-semibold text-lg">Starting at {price}</span>
-        <Button>View Details</Button>
+        <Button onClick={handleViewDetails}>View Details</Button>
       </CardFooter>
     </Card>
   );
