@@ -8,6 +8,7 @@ import { FoodTypesFilter } from "./filters/FoodTypesFilter";
 import { PlatformFilter } from "./filters/PlatformFilter";
 import { ContentTypeFilter } from "./filters/ContentTypeFilter";
 import { BudgetFilter } from "./filters/BudgetFilter";
+import { SortBy } from "./SortBy";
 
 interface FilterSystemProps {
   onFilterChange: (filters: any) => void;
@@ -34,6 +35,7 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
   });
 
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [currentSort, setCurrentSort] = useState("price-asc");
 
   const handleFilterChange = (category: string, subcategory: string, value: any) => {
     const newFilters = {
@@ -56,6 +58,11 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
                (!Array.isArray(value) && (value === "" || value === false))) {
       setActiveFilters(activeFilters.filter(f => f !== filterKey));
     }
+  };
+
+  const handleSortChange = (value: string) => {
+    setCurrentSort(value);
+    // You can add logic here to sort the results based on the selected value
   };
 
   const clearFilters = () => {
@@ -83,8 +90,10 @@ export const FilterSystem = ({ onFilterChange, resultCount }: FilterSystemProps)
   return (
     <div className="w-full max-w-xs bg-white p-4 rounded-lg border">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Filters</h3>
+        <h3 className="text-lg font-semibold">Categories</h3>
       </div>
+
+      <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
 
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">

@@ -37,7 +37,7 @@ export const BudgetFilter = ({
               onFilterChange("budget", "requiresFoodCredit", checked);
             }}
           />
-          <Label htmlFor="foodCredit">Requires Food Credit</Label>
+          <Label htmlFor="foodCredit">Does not require Food Credit</Label>
         </div>
       </div>
     </div>
