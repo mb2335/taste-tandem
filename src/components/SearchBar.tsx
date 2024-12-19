@@ -35,7 +35,7 @@ export const SearchBar = () => {
 
   const handleSelect = (value: string) => {
     if (!selectedFilters.includes(value)) {
-      setSelectedFilters((prev) => [...prev, value]);
+      setSelectedFilters(prev => [...prev, value]);
     }
     setSearch("");
     setShowSuggestions(false);
@@ -47,7 +47,7 @@ export const SearchBar = () => {
   };
 
   const removeFilter = (filter: string) => {
-    setSelectedFilters((prev) => prev.filter((f) => f !== filter));
+    setSelectedFilters(prev => prev.filter(f => f !== filter));
   };
 
   const clearAll = () => {
@@ -64,20 +64,21 @@ export const SearchBar = () => {
   };
 
   // Filter suggestions based on search input
-  const filteredSuggestions = suggestions.filter((suggestion) =>
-    suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
-    !selectedFilters.includes(suggestion.label)
-  );
+  const filteredSuggestions = search 
+    ? suggestions.filter(suggestion =>
+        suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
+        !selectedFilters.includes(suggestion.label)
+      )
+    : [];
 
-  // Group filtered suggestions by category
-  const groupedSuggestions: GroupedSuggestions = filteredSuggestions.reduce((acc, suggestion) => {
-    const category = suggestion.category;
-    if (!acc[category]) {
-      acc[category] = [];
+  // Group suggestions by category only if we have filtered suggestions
+  const groupedSuggestions = filteredSuggestions.reduce((acc: GroupedSuggestions, suggestion) => {
+    if (!acc[suggestion.category]) {
+      acc[suggestion.category] = [];
     }
-    acc[category].push(suggestion);
+    acc[suggestion.category].push(suggestion);
     return acc;
-  }, {} as GroupedSuggestions);
+  }, {});
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
@@ -85,7 +86,6 @@ export const SearchBar = () => {
         <div className="relative flex-1">
           <Command className="rounded-lg border shadow-md">
             <div className="flex items-center border-b px-3">
-              <Search className="h-4 w-4 text-gray-400" />
               <CommandInput
                 placeholder="Search food influencers..."
                 value={search}
@@ -93,7 +93,7 @@ export const SearchBar = () => {
                   setSearch(value);
                   setShowSuggestions(true);
                 }}
-                className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0 pl-2"
+                className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0"
               />
               {(search || selectedFilters.length > 0) && (
                 <Button
@@ -106,32 +106,31 @@ export const SearchBar = () => {
                 </Button>
               )}
             </div>
-            {showSuggestions && search && (
+            {showSuggestions && search && filteredSuggestions.length > 0 && (
               <CommandList>
-                {filteredSuggestions.length === 0 ? (
-                  <CommandEmpty>No results found.</CommandEmpty>
-                ) : (
-                  Object.entries(groupedSuggestions).map(([category, items]) => (
-                    <CommandGroup key={category} heading={category}>
-                      {items.map((suggestion) => (
-                        <CommandItem
-                          key={suggestion.label}
-                          value={suggestion.label}
-                          onSelect={handleSelect}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          {typeof suggestion.icon === "string" ? (
-                            <span>{suggestion.icon}</span>
-                          ) : (
-                            suggestion.icon
-                          )}
-                          {suggestion.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  ))
-                )}
+                {Object.entries(groupedSuggestions).map(([category, items]) => (
+                  <CommandGroup key={category} heading={category}>
+                    {items.map((suggestion) => (
+                      <CommandItem
+                        key={suggestion.label}
+                        value={suggestion.label}
+                        onSelect={handleSelect}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        {typeof suggestion.icon === "string" ? (
+                          <span>{suggestion.icon}</span>
+                        ) : (
+                          suggestion.icon
+                        )}
+                        {suggestion.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ))}
               </CommandList>
+            )}
+            {showSuggestions && search && filteredSuggestions.length === 0 && (
+              <CommandEmpty>No results found.</CommandEmpty>
             )}
           </Command>
         </div>
