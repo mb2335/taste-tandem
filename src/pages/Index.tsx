@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RoleSelection } from "@/components/RoleSelection";
 import { LogOut } from "lucide-react";
-import { CategoryFilter } from "@/components/CategoryFilter";
+import { FilterSystem } from "@/components/FilterSystem";
 import { Header } from "@/components/Header";
 
 const gigs = [
@@ -50,8 +50,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [filteredGigs, setFilteredGigs] = useState(gigs);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -84,9 +83,32 @@ const Index = () => {
     setUserRole(null);
   };
 
-  const handleFilterChange = (category: string, subcategory: string) => {
-    setSelectedCategory(category);
-    setSelectedSubcategory(subcategory);
+  const handleFilterChange = (filters: any) => {
+    // Apply filters to gigs
+    let filtered = [...gigs];
+
+    // Example filter logic (expand based on your needs)
+    if (filters.demographics?.ageGroups?.length > 0) {
+      // Filter by age groups
+    }
+
+    if (filters.contentStyle?.contentType?.length > 0) {
+      filtered = filtered.filter(gig => 
+        filters.contentStyle.contentType.some((type: string) => 
+          gig.tags.includes(type)
+        )
+      );
+    }
+
+    if (filters.budget?.priceRange) {
+      const [min, max] = filters.budget.priceRange;
+      filtered = filtered.filter(gig => {
+        const price = parseInt(gig.price.replace(/[^0-9]/g, ""));
+        return price >= min && price <= max;
+      });
+    }
+
+    setFilteredGigs(filtered);
   };
 
   if (loading) {
@@ -96,15 +118,6 @@ const Index = () => {
   if (isAuthenticated && !userRole) {
     return <RoleSelection />;
   }
-
-  const filteredGigs = selectedCategory
-    ? gigs.filter(gig => 
-        gig.tags.some(tag => 
-          tag === selectedSubcategory || 
-          tag === selectedCategory
-        )
-      )
-    : gigs;
 
   return (
     <div className="min-h-screen pt-16">
@@ -125,10 +138,9 @@ const Index = () => {
         </h2>
         
         <div className="flex flex-col md:flex-row gap-8">
-          <CategoryFilter
+          <FilterSystem
             onFilterChange={handleFilterChange}
-            selectedCategory={selectedCategory}
-            selectedSubcategory={selectedSubcategory}
+            resultCount={filteredGigs.length}
           />
           
           <div className="flex-1">
