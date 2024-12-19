@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen } from "lucide-react";
+import { BookOpen, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const BlogSection = () => {
@@ -46,7 +46,7 @@ export const BlogSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {blogs?.map((blog) => (
-            <Card key={blog.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card key={blog.id} className="overflow-hidden card-hover">
               <CardHeader className="p-0">
                 <img
                   src={blog.image_url}
@@ -57,12 +57,20 @@ export const BlogSection = () => {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-xl mb-2 line-clamp-2">{blog.title}</h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">{blog.excerpt}</p>
-                <Button variant="outline" className="w-full">
-                  Read More
+                <Button variant="outline" className="w-full group">
+                  Read More 
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Button variant="outline" size="lg" className="group">
+            View All Articles
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
         </div>
       </div>
     </section>
