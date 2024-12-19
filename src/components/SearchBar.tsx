@@ -1,5 +1,9 @@
 import { useState, useCallback } from "react";
-import { Command } from "@/components/ui/command";
+import { 
+  Command,
+  CommandInput,
+  CommandEmpty,
+} from "@/components/ui/command";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LocationSearch } from "./search/LocationSearch";
@@ -66,7 +70,7 @@ export const SearchBar = () => {
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Command className="rounded-lg border shadow-md">
-            <Command.Input
+            <CommandInput
               placeholder="Search food influencers..."
               value={search}
               onValueChange={(value) => {
@@ -93,7 +97,7 @@ export const SearchBar = () => {
                     onSelect={handleSelect}
                   />
                 ) : (
-                  <Command.Empty>No results found.</Command.Empty>
+                  <CommandEmpty>No results found.</CommandEmpty>
                 )}
               </>
             )}

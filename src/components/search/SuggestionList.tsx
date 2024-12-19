@@ -1,4 +1,9 @@
-import { Command } from "@/components/ui/command";
+import { 
+  Command,
+  CommandList,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
 import { Suggestion } from "@/types/search";
 
 interface SuggestionListProps {
@@ -18,11 +23,11 @@ export const SuggestionList = ({ suggestions, onSelect }: SuggestionListProps) =
   }, {});
 
   return (
-    <Command.List>
+    <CommandList>
       {Object.entries(groupedSuggestions).map(([category, items]) => (
-        <Command.Group key={category} heading={category}>
+        <CommandGroup key={category} heading={category}>
           {items.map((suggestion) => (
-            <Command.Item
+            <CommandItem
               key={suggestion.label}
               value={suggestion.label}
               onSelect={onSelect}
@@ -34,10 +39,10 @@ export const SuggestionList = ({ suggestions, onSelect }: SuggestionListProps) =
                 suggestion.icon
               )}
               {suggestion.label}
-            </Command.Item>
+            </CommandItem>
           ))}
-        </Command.Group>
+        </CommandGroup>
       ))}
-    </Command.List>
+    </CommandList>
   );
 };
