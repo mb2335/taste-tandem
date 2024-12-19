@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
-const suggestions = [
+type Suggestion = {
+  label: string;
+  icon: React.ReactNode | string;
+  category: string;
+};
+
+const suggestions: Suggestion[] = [
   { label: "Vegan", icon: "🥗", category: "Cuisine" },
   { label: "Food Photography", icon: <Camera className="h-4 w-4" />, category: "Content Type" },
   { label: "Instagram", icon: <Instagram className="h-4 w-4" />, category: "Platform" },
@@ -30,12 +36,14 @@ export const SearchBar = () => {
   const [location, setLocation] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleSelect = (value: string) => {
     if (!selectedFilters.includes(value)) {
       setSelectedFilters([...selectedFilters, value]);
     }
     setSearch("");
+    setShowSuggestions(false);
   };
 
   const handleLocationSelect = (city: string) => {
@@ -51,6 +59,7 @@ export const SearchBar = () => {
     setSearch("");
     setLocation("");
     setSelectedFilters([]);
+    setShowSuggestions(false);
   };
 
   const handleSearch = () => {
@@ -60,26 +69,24 @@ export const SearchBar = () => {
     });
   };
 
-  // Filter suggestions first
+  // Filter suggestions
   const filteredSuggestions = suggestions.filter(suggestion => 
     suggestion.label.toLowerCase().includes(search.toLowerCase()) &&
     !selectedFilters.includes(suggestion.label)
   );
 
-  // Only group suggestions if we have filtered results
-  const groupedSuggestions = filteredSuggestions.length > 0
-    ? filteredSuggestions.reduce((acc, suggestion) => {
-        const category = suggestion.category || 'Other';
-        if (!acc[category]) {
-          acc[category] = [];
-        }
-        acc[category].push(suggestion);
-        return acc;
-      }, {} as Record<string, typeof suggestions>)
-    : {};
-
-  // Check if we have any groups with items
-  const hasResults = Object.keys(groupedSuggestions).length > 0;
+  // Group suggestions by category
+  const groupedSuggestions: Record<string, Suggestion[]> = {};
+  
+  if (filteredSuggestions.length > 0) {
+    filteredSuggestions.forEach(suggestion => {
+      const category = suggestion.category || 'Other';
+      if (!groupedSuggestions[category]) {
+        groupedSuggestions[category] = [];
+      }
+      groupedSuggestions[category].push(suggestion);
+    });
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
@@ -91,7 +98,10 @@ export const SearchBar = () => {
               <CommandInput
                 placeholder="Search food influencers..."
                 value={search}
-                onValueChange={setSearch}
+                onValueChange={(value) => {
+                  setSearch(value);
+                  setShowSuggestions(true);
+                }}
                 className="flex h-[45px] w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0 pl-2"
               />
               {(search || selectedFilters.length > 0) && (
@@ -105,28 +115,31 @@ export const SearchBar = () => {
                 </Button>
               )}
             </div>
-            {search && (
+            {showSuggestions && search && (
               <CommandList>
-                {!hasResults && <CommandEmpty>No results found.</CommandEmpty>}
-                {Object.entries(groupedSuggestions).map(([category, items]) => (
-                  <CommandGroup key={category} heading={category}>
-                    {items.map((suggestion) => (
-                      <CommandItem
-                        key={suggestion.label}
-                        value={suggestion.label}
-                        onSelect={handleSelect}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        {typeof suggestion.icon === "string" ? (
-                          <span>{suggestion.icon}</span>
-                        ) : (
-                          suggestion.icon
-                        )}
-                        {suggestion.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                ))}
+                {filteredSuggestions.length === 0 ? (
+                  <CommandEmpty>No results found.</CommandEmpty>
+                ) : (
+                  Object.entries(groupedSuggestions).map(([category, items]) => (
+                    <CommandGroup key={category} heading={category}>
+                      {items.map((suggestion) => (
+                        <CommandItem
+                          key={suggestion.label}
+                          value={suggestion.label}
+                          onSelect={handleSelect}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          {typeof suggestion.icon === "string" ? (
+                            <span>{suggestion.icon}</span>
+                          ) : (
+                            suggestion.icon
+                          )}
+                          {suggestion.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  ))
+                )}
               </CommandList>
             )}
           </Command>
