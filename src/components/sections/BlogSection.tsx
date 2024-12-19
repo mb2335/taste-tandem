@@ -9,7 +9,7 @@ export const BlogSection = () => {
   const { data: blogs, isLoading, error } = useQuery({
     queryKey: ['featured-blogs'],
     queryFn: async () => {
-      console.log('Fetching blog posts...');
+      console.log('Starting blog posts fetch...');
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
@@ -21,7 +21,7 @@ export const BlogSection = () => {
         throw error;
       }
       
-      console.log('Fetched blog posts:', data);
+      console.log('Raw response from Supabase:', { data, error });
       return data || [];
     },
   });
@@ -74,7 +74,7 @@ export const BlogSection = () => {
                     className="w-full h-48 object-cover"
                     onError={(e) => {
                       console.error('Image failed to load:', blog.image_url);
-                      e.currentTarget.src = '/placeholder.svg';
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327';
                     }}
                   />
                 </CardHeader>
