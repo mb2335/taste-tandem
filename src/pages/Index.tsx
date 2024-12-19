@@ -1,5 +1,4 @@
 import { Hero } from "@/components/Hero";
-import { SearchSection } from "@/components/SearchSection";
 import { GigCard } from "@/components/GigCard";
 import { CategorySection } from "@/components/CategorySection";
 import { Button } from "@/components/ui/button";
@@ -118,7 +117,7 @@ const Index = () => {
         </div>
       )}
       <Hero />
-      <SearchSection />
+      <CategorySection />
       
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center mb-12">
@@ -141,8 +140,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-
-      <CategorySection />
     </div>
   );
 };

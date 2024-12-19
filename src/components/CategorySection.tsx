@@ -9,8 +9,8 @@ const categories = [
   },
   {
     icon: Share2,
-    title: "Social Media & Marketing",
-    description: "Platform management and growth strategies",
+    title: "Social Media Management",
+    description: "Platform management and content strategy",
   },
   {
     icon: Palette,
@@ -19,8 +19,8 @@ const categories = [
   },
   {
     icon: Calendar,
-    title: "Event Coverage",
-    description: "Professional event documentation",
+    title: "Marketing and Events",
+    description: "Strategic marketing and event coverage",
   },
   {
     icon: Star,
@@ -41,7 +41,7 @@ export const CategorySection = () => {
       <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
         Connect with professional content creators who understand the restaurant industry
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-6 gap-6">
         {categories.map((category) => (
           <Card key={category.title} className="card-hover cursor-pointer">
             <CardContent className="flex flex-col items-center text-center p-6">

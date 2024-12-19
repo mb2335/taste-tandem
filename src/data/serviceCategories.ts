@@ -19,16 +19,16 @@ export const serviceCategories: ServiceCategory[] = [
     ]
   },
   {
-    name: "Social Media & Marketing",
+    name: "Social Media Management",
     subcategories: [
       "Platform Management",
       "Content Strategy",
-      "Paid Advertising",
-      "Influencer Marketing",
-      "Email Marketing",
-      "Local SEO",
-      "Brand Storytelling",
-      "Campaign Management"
+      "Community Management",
+      "Influencer Outreach",
+      "Social Media Analytics",
+      "Content Calendar",
+      "Engagement Strategy",
+      "Crisis Management"
     ]
   },
   {
@@ -45,14 +45,16 @@ export const serviceCategories: ServiceCategory[] = [
     ]
   },
   {
-    name: "Event Coverage",
+    name: "Marketing and Events",
     subcategories: [
-      "Restaurant Opening",
+      "Event Planning",
+      "Marketing Strategy",
+      "Campaign Management",
+      "Email Marketing",
+      "Local SEO",
+      "Brand Storytelling",
       "Special Events",
-      "Menu Launch",
-      "Behind the Scenes",
-      "Chef Interviews",
-      "Food Preparation"
+      "Seasonal Promotions"
     ]
   },
   {
