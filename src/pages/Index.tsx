@@ -139,18 +139,20 @@ const Index = () => {
   } = useGigs(sampleGigs);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <Hero />
-      <GigsList
-        gigs={filteredGigs}
-        onFilterChange={handleFilterChange}
-        onSortChange={handleSortChange}
-        currentSort={currentSort}
-      />
-      <PremiumSection />
-      <BlogSection />
-      <FAQSection />
+      <main>
+        <Hero />
+        <GigsList
+          gigs={filteredGigs}
+          onFilterChange={handleFilterChange}
+          onSortChange={handleSortChange}
+          currentSort={currentSort}
+        />
+        <PremiumSection />
+        <BlogSection />
+        <FAQSection />
+      </main>
       <Footer />
     </div>
   );
