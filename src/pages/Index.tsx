@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { RoleSelection } from "@/components/RoleSelection";
 import { LogOut } from "lucide-react";
+import { DashboardLayout } from "@/components/DashboardLayout";
 
 const gigs = [
   {
@@ -91,7 +92,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <DashboardLayout>
       {isAuthenticated && (
         <div className="absolute top-4 right-4">
           <Button variant="ghost" onClick={handleSignOut}>
@@ -100,10 +101,18 @@ const Index = () => {
           </Button>
         </div>
       )}
-      <Hero />
+      
+      <div className="max-w-4xl mx-auto mb-12">
+        <h1 className="text-4xl font-bold mb-4">Welcome to Taste Tandem</h1>
+        <p className="text-lg text-muted-foreground">
+          Select your business goal from the sidebar to discover curated influencer services 
+          that will help you achieve your objectives.
+        </p>
+      </div>
+
       <SearchSection />
       
-      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-16">
         <h2 className="text-3xl font-bold text-center mb-12">
           {userRole === "restaurant" ? "Top-Rated Food Influencers" : "Restaurant Opportunities"}
         </h2>
@@ -115,7 +124,7 @@ const Index = () => {
       </div>
 
       <CategorySection />
-    </div>
+    </DashboardLayout>
   );
 };
 
