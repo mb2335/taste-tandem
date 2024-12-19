@@ -1,32 +1,13 @@
 import { Hero } from "@/components/Hero";
 import { Header } from "@/components/Header";
-import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
-import { GigsSection } from "@/components/sections/GigsSection";
+import { GigsList } from "@/components/gigs/GigsList";
 import { PremiumSection } from "@/components/sections/PremiumSection";
 import { BlogSection } from "@/components/sections/BlogSection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { Footer } from "@/components/Footer";
-import { SortBy } from "@/components/SortBy";
+import { useGigs } from "@/components/gigs/useGigs";
 
-interface Gig {
-  id?: string;
-  name: string;
-  title: string;
-  description: string;
-  price: string;
-  deliveryTime: string;
-  rating: number;
-  engagement: string;
-  followers: string;
-  image: string;
-  tags: string[];
-  platforms: string[];
-  contentType: string;
-  portfolio: string[];
-}
-
-const sampleGigs: Gig[] = [
+const sampleGigs = [
   {
     id: "1",
     name: "Sarah Chen",
@@ -150,85 +131,23 @@ const sampleGigs: Gig[] = [
 ];
 
 const Index = () => {
-  const [currentSort, setCurrentSort] = useState("price-asc");
-  const [filteredGigs, setFilteredGigs] = useState(sampleGigs);
-
-  const handleFilterChange = async (filters: any) => {
-    let filtered = [...sampleGigs];
-
-    if (filters.demographics?.ageGroups?.length > 0) {
-      const { data } = await supabase
-        .from('profile_tags')
-        .select('profile_id')
-        .eq('tag_category', 'demographics')
-        .in('tag_name', filters.demographics.ageGroups);
-
-      if (data) {
-        const profileIds = data.map(tag => tag.profile_id);
-        filtered = filtered.filter(gig => gig.id && profileIds.includes(gig.id));
-      }
-    }
-
-    if (filters.contentStyle?.platforms?.length > 0) {
-      const { data } = await supabase
-        .from('profile_tags')
-        .select('profile_id')
-        .eq('tag_category', 'platform')
-        .in('tag_name', filters.contentStyle.platforms);
-
-      if (data) {
-        const profileIds = data.map(tag => tag.profile_id);
-        filtered = filtered.filter(gig => gig.id && profileIds.includes(gig.id));
-      }
-    }
-
-    setFilteredGigs(filtered);
-  };
-
-  const handleSortChange = (value: string) => {
-    setCurrentSort(value);
-    const sorted = [...filteredGigs].sort((a, b) => {
-      switch (value) {
-        case "price-asc":
-          return parseInt(a.price.slice(1)) - parseInt(b.price.slice(1));
-        case "price-desc":
-          return parseInt(b.price.slice(1)) - parseInt(a.price.slice(1));
-        case "rating":
-          return b.rating - a.rating;
-        case "followers":
-          return parseInt(b.followers) - parseInt(a.followers);
-        case "engagement":
-          return parseFloat(b.engagement) - parseFloat(a.engagement);
-        case "reach":
-          return parseInt(b.followers) * (parseFloat(b.engagement)/100) - 
-                 parseInt(a.followers) * (parseFloat(a.engagement)/100);
-        default:
-          return 0;
-      }
-    });
-    setFilteredGigs(sorted);
-  };
+  const {
+    currentSort,
+    filteredGigs,
+    handleFilterChange,
+    handleSortChange,
+  } = useGigs(sampleGigs);
 
   return (
     <div className="min-h-screen">
       <Header />
       <Hero />
-      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-neutral-900">Browse Opportunities</h2>
-          <div className="flex-shrink-0">
-            <SortBy onSortChange={handleSortChange} currentSort={currentSort} />
-          </div>
-        </div>
-        
-        <GigsSection
-          gigs={filteredGigs}
-          onFilterChange={handleFilterChange}
-          onSortChange={handleSortChange}
-          currentSort={currentSort}
-        />
-      </div>
-
+      <GigsList
+        gigs={filteredGigs}
+        onFilterChange={handleFilterChange}
+        onSortChange={handleSortChange}
+        currentSort={currentSort}
+      />
       <PremiumSection />
       <BlogSection />
       <FAQSection />
