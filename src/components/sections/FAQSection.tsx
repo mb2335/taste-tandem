@@ -12,9 +12,12 @@ export const FAQSection = () => {
   const { data: faqs, isLoading } = useQuery({
     queryKey: ['faqs'],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('faqs')
-        .select('*');
+        .select('*')
+        .order('category');
+      
+      if (error) throw error;
       return data || [];
     },
   });
@@ -24,7 +27,7 @@ export const FAQSection = () => {
       <section className="py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse space-y-4">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="h-16 bg-gray-200 rounded" />
             ))}
           </div>

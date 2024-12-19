@@ -5,7 +5,6 @@ import { Star, Clock, Instagram, TrendingUp, Camera, Video, ChevronLeft, Chevron
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -68,30 +67,33 @@ export const GigCard = ({
   return (
     <Card className="w-full max-w-sm mx-auto">
       <CardHeader className="p-0">
-        <Carousel className="w-full">
-          <CarouselContent>
-            {allImages.map((img, index) => (
-              <CarouselItem key={index}>
-                <div className="relative h-48">
-                  <img
-                    src={img}
-                    alt={`${name} - Image ${index + 1}`}
-                    className="w-full h-48 object-cover"
-                  />
-                  {index === 0 && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                      <h3 className="font-semibold text-lg text-white">{name}</h3>
-                      <p className="text-white/90 text-sm">{title}</p>
-                    </div>
-                  )}
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <div className="relative">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {allImages.map((img, index) => (
+                <CarouselItem key={index}>
+                  <div className="relative h-48">
+                    <img
+                      src={img}
+                      alt={`${name} - Image ${index + 1}`}
+                      className="w-full h-48 object-cover"
+                    />
+                    {index === 0 && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                        <h3 className="font-semibold text-lg text-white">{name}</h3>
+                        <p className="text-white/90 text-sm">{title}</p>
+                      </div>
+                    )}
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 hover:bg-white" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 hover:bg-white" />
+          </Carousel>
+        </div>
       </CardHeader>
+      
       <CardContent className="p-4">
         <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{description}</p>
         
@@ -144,6 +146,7 @@ export const GigCard = ({
           <span>{deliveryTime}</span>
         </div>
       </CardContent>
+      
       <CardFooter className="flex justify-between items-center p-4 pt-0">
         <span className="font-semibold text-lg">Starting at {price}</span>
         <Button onClick={handleViewDetails}>View Details</Button>

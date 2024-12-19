@@ -8,10 +8,13 @@ export const BlogSection = () => {
   const { data: blogs, isLoading } = useQuery({
     queryKey: ['featured-blogs'],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
-        .limit(3);
+        .limit(3)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
       return data || [];
     },
   });

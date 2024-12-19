@@ -5,25 +5,8 @@ import { SortBy } from "@/components/SortBy";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface Gig {
-  id?: string;
-  name: string;
-  title: string;
-  description: string;
-  price: string;
-  deliveryTime: string;
-  rating: number;
-  engagement: string;
-  followers: string;
-  image: string;
-  tags: string[];
-  platforms: string[];
-  contentType: string;
-  portfolio: string[];
-}
-
 interface GigsListProps {
-  gigs: Gig[];
+  gigs: any[];
   onFilterChange: (filters: any) => void;
   onSortChange: (value: string) => void;
   currentSort: string;
@@ -67,29 +50,40 @@ export const GigsList = ({
             ))}
           </div>
 
-          {totalPages > 1 && (
-            <div className="mt-8 flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Previous
-              </Button>
-              <span className="flex items-center">
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-              >
-                Next
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-          )}
+          <div className="mt-12 flex flex-col items-center gap-6">
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  Previous
+                </Button>
+                <span className="flex items-center">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+            )}
+            
+            <Button 
+              variant="default" 
+              size="lg"
+              className="bg-primary hover:bg-primary/90"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              Explore More Profiles
+            </Button>
+          </div>
         </div>
       </div>
     </div>
